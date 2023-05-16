@@ -2,18 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 from users.models import User
-# class User(AbstractUser):
-#     role = models.CharField(max_length=255,
-#                             verbose_name='Категория пользователя')
-#     bio = models.CharField(max_length=255,
-#                            verbose_name='Описание пользователя')
-#     first_name = models.CharField(max_length=255,
-#                                   verbose_name='Имя пользователя')
-#     last_name = models.CharField(max_length=255,
-#                                  verbose_name='Фамилия пользователя')
-
-#     def __str__(self):
-#         return self.username
 
 
 class Category(models.Model):
@@ -43,12 +31,12 @@ class Genre(models.Model):
         verbose_name_plural = 'Жанры'
 
 
-class Titles(models.Model):
+class Title(models.Model):
     """Модель произведений."""
     name = models.CharField(max_length=255,
                             verbose_name='Название произведения')
     year = models.IntegerField(verbose_name='Год выпуска')
-    description = models.TextField(verbose_name='Описание')
+    description = models.TextField(blank=True, null=True, verbose_name='Описание')
     category = models.ForeignKey(
         Category, blank=True, null=True, on_delete=models.SET_NULL,
         related_name='categories', verbose_name='Категория')
@@ -81,7 +69,7 @@ class Review(models.Model):
 
 class Comments(models.Model):
     """Модель комментариев к отзывам."""
-    review = models.ForeignKey(Review, on_delete=models.CASCADE,
+    review = models.ForeignKey(Review, unique=False, on_delete=models.CASCADE,
                                related_name='comments',
                                verbose_name='Комментарий к отзыву')
     text = models.TextField(max_length=1000, verbose_name='Текст комментария')
