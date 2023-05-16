@@ -11,16 +11,19 @@ class IsAuthorOrReadOnly(BasePermission):
     """
     def has_object_permission(self, request, view, obj):
         """Ограничение на уровне объекта."""
+        if request.user.is_superuser:
+            return True
         return request.method in SAFE_METHODS or obj.author == request.user
 
 
-class IsAdmin(BasePermission):
+class IsAdmin(BasePermission
     """Доступ разрешен только администратору,
 
     проверка на уровне представления.
     """
     def has_permission(self, request, view):
-
+        if request.user.is_superuser:
+            return True
         return (request.user.role is not None
                 and request.user.role == 'admin')
 
@@ -31,7 +34,8 @@ class IsAdminOrReadOnly(BasePermission):
     проверка на уровне представления.
     """
     def has_permission(self, request, view):
-
+        if request.user.is_superuser:
+            return True
         return (request.method in SAFE_METHODS
                 or request.user.role is not None
                 and request.user.role == 'admin')
@@ -45,6 +49,8 @@ class IsAuthorModeratorAdminOrReadonly(BaseException):
     """
     def has_object_permission(self, request, view, obj):
         """Ограничение на уровне объекта."""
+        if request.user.is_superuser:
+            return True
         return (request.method in SAFE_METHODS
                 or (obj.author == request.user
                     or request.user.role is not None
