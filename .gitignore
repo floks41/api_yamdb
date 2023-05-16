@@ -150,3 +150,6 @@ media/
 
 # папки с миграциями
 migrations/
+
+# папки с письмами email
+sent_emails/
