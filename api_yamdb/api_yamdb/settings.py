@@ -110,7 +110,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 5,
 }
 
-# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SIMPLE_JWT = {
     # Устанавливаем срок жизни токена
