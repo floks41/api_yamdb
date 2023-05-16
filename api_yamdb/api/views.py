@@ -45,7 +45,7 @@ class GenreViewSet(CreateDestroyListViewSet):
     lookup_field = "slug"
 
 class TitleViewSet(viewsets.ModelViewSet):
-    """Вьюсет для комментариев."""
+    """Вьюсет для Произведению."""
 
     queryset = Title.objects.annotate(
         rating=Avg('reviews__score'))
