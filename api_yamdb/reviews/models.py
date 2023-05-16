@@ -53,7 +53,7 @@ class Title(models.Model):
 
 class Review(models.Model):
     """Модель отзывов на произведения."""
-    title = models.ForeignKey(Titles, on_delete=models.CASCADE,
+    title = models.ForeignKey(Title, on_delete=models.CASCADE,
                               verbose_name='Название произведения')
     text = models.TextField(max_length=1000, verbose_name='Текст ревью')
     author = models.ForeignKey(User, on_delete=models.CASCADE,

@@ -38,15 +38,7 @@ class TitleReadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Title
-        fields = (
-            'id',
-            'name',
-            'year',
-            'description',
-            'genre',
-            'category',
-            'rating',
-        )
+        fields = '__all__'
 
 class TitleWriteSerializer(serializers.ModelSerializer):
     """Сериализатор для добавления и частичного изменения
@@ -80,13 +72,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        fields = (
-            "id",
-            "text",
-            "author",
-            "score",
-            "pub_date",
-        )
+        fields = '__all__'
 
     def validate(self, data):
         request = self.context['request']

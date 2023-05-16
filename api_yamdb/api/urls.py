@@ -5,10 +5,10 @@ from users.views import UsersView, AuthGetTokenView, AuthSignUpView
 
 from .views import (
     CategoryViewSet,
-    CommentsViewSet,
+    CommentViewSet,
     GenreViewSet,
     ReviewViewSet,
-    TitlesViewSet,
+    TitleViewSet,
 )
 
 class NoPutRouter(routers.DefaultRouter):
@@ -24,13 +24,13 @@ class NoPutRouter(routers.DefaultRouter):
 router_v1 = NoPutRouter()
 router_v1.register('categories', CategoryViewSet, basename='categories')
 router_v1.register('genres', GenreViewSet, basename='genres')
-router_v1.register('titles', TitlesViewSet, basename='titles')
+router_v1.register('titles', TitleViewSet, basename='titles')
 router_v1.register(
-    r'titles/(?P<title_id>\d+)/reviews', ReviewViewSet, basename='reviews'
+    r'titles/(?P<title_id>\d+)/reviews', ReviewViewSet, basename='review'
 )
 router_v1.register(
     r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments',
-    CommentsViewSet,
+    CommentViewSet,
     basename='comments',
 )
 

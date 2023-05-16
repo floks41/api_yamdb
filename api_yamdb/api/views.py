@@ -12,7 +12,6 @@ from rest_framework.pagination import LimitOffsetPagination
 from api.filters import TitleFilter
 from api.mixins import CreateDestroyListViewSet
 from api.permissions import (
-    IsAdminModeratorAuthorOrReadOnly,
     IsAdminOrReadOnly,
     IsAdmin,
 )
@@ -48,7 +47,7 @@ class TitleViewSet(viewsets.ModelViewSet):
     """Вьюсет для Произведению."""
 
     queryset = Title.objects.annotate(
-        rating=Avg('reviews__score'))
+        rating=Avg('review__score'))
     permission_classes = (IsAdminOrReadOnly,)
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend,)
@@ -63,7 +62,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     """Вьюсет для отзывов."""
 
     serializer_class = ReviewSerializer
-    permission_classes = (IsAdminModeratorAuthorOrReadOnly,)
+    #permission_classes = (IsAdminModeratorAuthorOrReadOnly,)
     pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
@@ -78,7 +77,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     """"Вьюсет для комментариев."""
 
     serializer_class = CommentsSerializer
-    permission_classes = (IsAdminModeratorAuthorOrReadOnly,)
+    #permission_classes = (IsAdminModeratorAuthorOrReadOnly,)
 
     def get_queryset(self):
         review = get_object_or_404(Review, pk=self.kwargs.get("review_id"))

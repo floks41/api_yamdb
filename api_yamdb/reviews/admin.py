@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import Category, Genre, Titles, Review, Comments
+from .models import Category, Genre, Title, Review, Comments
 
 
-@admin.register(Titles)
+@admin.register(Title)
 class TitlesAdmin(admin.ModelAdmin):
     list_display = ('name', 'year', 'description', 'category')
 
@@ -19,7 +19,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ('title', 'text', 'author', 'score', 'pub_date')
+    list_display = ('text',  'author')
 
 
 @admin.register(Comments)

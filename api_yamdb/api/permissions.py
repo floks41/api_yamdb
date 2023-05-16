@@ -6,7 +6,6 @@ from rest_framework.permissions import SAFE_METHODS, BasePermission
 
 class IsAuthorOrReadOnly(BasePermission):
     """Небезопасные методы HTTP разрешены только автору.
-
     В остальные случаях разрешены безопасные методы HTTP: GET, HEAD, OPTIONS.
     """
     def has_object_permission(self, request, view, obj):
@@ -16,11 +15,10 @@ class IsAuthorOrReadOnly(BasePermission):
         return request.method in SAFE_METHODS or obj.author == request.user
 
 
-class IsAdmin(BasePermission
+class IsAdmin(BasePermission):
     """Доступ разрешен только администратору,
+    проверка на уровне представления."""
 
-    проверка на уровне представления.
-    """
     def has_permission(self, request, view):
         if request.user.is_superuser:
             return True
@@ -30,7 +28,6 @@ class IsAdmin(BasePermission
 
 class IsAdminOrReadOnly(BasePermission):
     """Небезопасные методы HTTP разрешены только администратору,
-
     проверка на уровне представления.
     """
     def has_permission(self, request, view):
@@ -43,7 +40,6 @@ class IsAdminOrReadOnly(BasePermission):
 
 class IsAuthorModeratorAdminOrReadonly(BaseException):
     """Небезопасные методы HTTP разрешены только
-
     автору, модератору или администратору.
     В остальные случаях разрешены безопасные методы HTTP: GET, HEAD, OPTIONS.
     """
