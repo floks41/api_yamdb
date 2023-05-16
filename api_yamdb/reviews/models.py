@@ -1,19 +1,19 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+from users.models import User
+# class User(AbstractUser):
+#     role = models.CharField(max_length=255,
+#                             verbose_name='Категория пользователя')
+#     bio = models.CharField(max_length=255,
+#                            verbose_name='Описание пользователя')
+#     first_name = models.CharField(max_length=255,
+#                                   verbose_name='Имя пользователя')
+#     last_name = models.CharField(max_length=255,
+#                                  verbose_name='Фамилия пользователя')
 
-class User(AbstractUser):
-    role = models.CharField(max_length=255,
-                            verbose_name='Категория пользователя')
-    bio = models.CharField(max_length=255,
-                           verbose_name='Описание пользователя')
-    first_name = models.CharField(max_length=255,
-                                  verbose_name='Имя пользователя')
-    last_name = models.CharField(max_length=255,
-                                 verbose_name='Фамилия пользователя')
-
-    def __str__(self):
-        return self.username
+#     def __str__(self):
+#         return self.username
 
 
 class Category(models.Model):

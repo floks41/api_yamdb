@@ -16,7 +16,7 @@ class IsAuthorOrReadOnly(BasePermission):
         return request.method in SAFE_METHODS or obj.author == request.user
 
 
-class IsAdmin(BasePermission
+class IsAdmin(BasePermission):
     """Доступ разрешен только администратору,
 
     проверка на уровне представления.

@@ -1,5 +1,7 @@
 from django.urls import include, path
 from rest_framework import routers
+from django.urls import path, include
+from users.views import UsersView, AuthGetTokenView, AuthSignUpView
 
 from .views import (
     CategoryViewSet,
@@ -8,7 +10,6 @@ from .views import (
     ReviewViewSet,
     TitlesViewSet,
 )
-
 
 class NoPutRouter(routers.DefaultRouter):
     """Класс роутер, отключающий PUT запросы."""
@@ -32,4 +33,16 @@ router_v1.register(
     CommentsViewSet,
     basename='comments',
 )
+
+
+app_name = 'api'
+
+urlpatterns = []
+
+# Эндпоинты работы с пользователями авторизации и регистрации
+urlpatterns += [
+    path('users/', UsersView.as_view()),
+    path('auth/token/', AuthGetTokenView.as_view()),
+    path('auth/signup/', AuthSignUpView.as_view()),
+]
 
