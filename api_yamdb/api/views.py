@@ -14,6 +14,7 @@ from api.mixins import CreateDestroyListViewSet
 from api.permissions import (
     IsAdminOrReadOnly,
     IsAdmin,
+    IsAuthorModeratorAdminOrReadonly
 )
 from api.serializers import (
     CategorySerializer,
@@ -62,7 +63,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     """Вьюсет для отзывов."""
 
     serializer_class = ReviewSerializer
-    #permission_classes = (IsAdminModeratorAuthorOrReadOnly,)
+    permission_classes = (IsAuthorModeratorAdminOrReadonly,)
     pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
@@ -77,7 +78,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     """"Вьюсет для комментариев."""
 
     serializer_class = CommentsSerializer
-    #permission_classes = (IsAdminModeratorAuthorOrReadOnly,)
+    permission_classes = (IsAuthorModeratorAdminOrReadonly,)
 
     def get_queryset(self):
         review = get_object_or_404(Review, pk=self.kwargs.get("review_id"))

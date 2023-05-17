@@ -1,7 +1,8 @@
 from django.urls import include, path
 from rest_framework import routers
 from django.urls import path, include
-from users.views import UsersView, AuthGetTokenView, AuthSignUpView
+from users.views import AuthGetTokenView, AuthSignUpView
+from users.views import UsersViewSet
 
 from .views import (
     CategoryViewSet,
@@ -34,15 +35,20 @@ router_v1.register(
     basename='comments',
 )
 
+router_v1.register(
+    'users', UsersViewSet, basename='users'
+)
 
 app_name = 'api'
 
-urlpatterns = []
+urlpatterns = [
+    path('', include(router_v1.urls))
+]
 
 # Эндпоинты работы с пользователями авторизации и регистрации
-urlpatterns += [
-    path('users/', UsersView.as_view()),
-    path('auth/token/', AuthGetTokenView.as_view()),
-    path('auth/signup/', AuthSignUpView.as_view()),
-]
+# urlpatterns += [
+#     path('auth/token/', AuthGetTokenView.as_view()),
+#     path('auth/signup/', AuthSignUpView.as_view()),
+# ]
+
 
