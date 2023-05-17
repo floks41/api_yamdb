@@ -9,7 +9,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ('name', 'slug')
+        fields = '__all__'
 
 
 class GenreSerializer(serializers.ModelSerializer):
@@ -17,7 +17,7 @@ class GenreSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Genre
-        fields = ('name', 'slug')
+        fields = '__all__'
 
 
 class CommentsSerializer(serializers.ModelSerializer):
@@ -86,7 +86,6 @@ class ReviewSerializer(serializers.ModelSerializer):
                     title=title, author=author
             ).exists():
                 raise ValidationError(
-                    'Вы не можете добавить более'
-                    'одного отзыва на произведение'
+                    'Вы не можете добавить более одного отзыва на произведение'
                 )
         return data
