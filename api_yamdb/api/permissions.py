@@ -25,8 +25,7 @@ class IsAdmin(BasePermission):
 
 class IsAdminOrReadOnly(BasePermission):
     """Небезопасные методы HTTP разрешены только администратору,
-    проверка на уровне представления.
-    """
+    проверка на уровне представления."""
     def has_permission(self, request, view):
         if request.user.is_superuser:
             return True

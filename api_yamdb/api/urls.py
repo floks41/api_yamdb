@@ -1,7 +1,6 @@
 from django.urls import include, path
 from rest_framework import routers
 from users.views import AuthGetTokenView, AuthSignUpView, UsersView
-
 from .views import (CategoryViewSet, CommentViewSet, GenreViewSet,
                     ReviewViewSet, TitleViewSet)
 
@@ -14,6 +13,7 @@ class NoPutRouter(routers.DefaultRouter):
             del bound_methods['put']
         return bound_methods
 
+
 router_v1 = NoPutRouter()
 router_v1.register('categories', CategoryViewSet, basename='categories')
 router_v1.register('genres', GenreViewSet, basename='genres')
@@ -23,8 +23,7 @@ router_v1.register(
 )
 router_v1.register(
     r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments',
-    CommentViewSet,
-    basename='comments',
+    CommentViewSet, basename='comments',
 )
 
 app_name = 'api'
