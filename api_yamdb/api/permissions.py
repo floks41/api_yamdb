@@ -1,6 +1,3 @@
-"""Модуль разрешений для представлений приложения Api."""
-
-
 from rest_framework.permissions import SAFE_METHODS, BasePermission
 
 
@@ -38,7 +35,7 @@ class IsAdminOrReadOnly(BasePermission):
                 and request.user.role == 'admin')
 
 
-class IsAuthorModeratorAdminOrReadonly(BaseException):
+class IsAuthorModeratorAdminOrReadonly(BasePermission):
     """Небезопасные методы HTTP разрешены только
     автору, модератору или администратору.
     В остальные случаях разрешены безопасные методы HTTP: GET, HEAD, OPTIONS.
