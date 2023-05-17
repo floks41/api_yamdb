@@ -1,14 +1,12 @@
-import datetime as dt
-
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-
 from reviews.models import Category, Comments, Genre, Review, Title
 
 
 class CategorySerializer(serializers.ModelSerializer):
     """Сериализатор для категорий."""
+
     class Meta:
         model = Category
         fields = ('name', 'slug')
@@ -16,9 +14,11 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class GenreSerializer(serializers.ModelSerializer):
     """Сериализатор для жанров."""
+
     class Meta:
         model = Genre
         fields = ('name', 'slug')
+
 
 class CommentsSerializer(serializers.ModelSerializer):
     review = serializers.SlugRelatedField(slug_field='text', read_only=True)
@@ -30,6 +30,7 @@ class CommentsSerializer(serializers.ModelSerializer):
         model = Comments
         fields = '__all__'
 
+
 class TitleReadSerializer(serializers.ModelSerializer):
     """Сериализатор для SAFE_METHODS к произведениям."""
     category = CategorySerializer(many=False, required=False)
@@ -39,6 +40,7 @@ class TitleReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Title
         fields = '__all__'
+
 
 class TitleWriteSerializer(serializers.ModelSerializer):
     """Сериализатор для добавления и частичного изменения
@@ -81,7 +83,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         author = request.user
         if request.method == 'POST':
             if Review.objects.filter(
-                title=title, author=author
+                    title=title, author=author
             ).exists():
                 raise ValidationError(
                     'Вы не можете добавить более'
