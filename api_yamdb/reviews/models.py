@@ -1,6 +1,7 @@
-from django.db import models
+from datetime import datetime
 from django.contrib.auth.models import AbstractUser
-
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
 from users.models import User
 
 
@@ -25,7 +26,7 @@ class Genre(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     class Meta:
         verbose_name = 'Жанр'
         verbose_name_plural = 'Жанры'
@@ -35,8 +36,14 @@ class Title(models.Model):
     """Модель произведений."""
     name = models.CharField(max_length=255,
                             verbose_name='Название произведения')
-    year = models.IntegerField(verbose_name='Год выпуска')
-    description = models.TextField(blank=True, null=True, verbose_name='Описание')
+    year = models.IntegerField(verbose_name='Год выпуска',
+                               validators=[
+                                   MaxValueValidator(
+                                       datetime.now().year,
+                                       message='Год выпуска не может быть больше текущего')
+                               ])
+    description = models.TextField(blank=True, null=True,
+                                   verbose_name='Описание')
     category = models.ForeignKey(
         Category, blank=True, null=True, on_delete=models.SET_NULL,
         related_name='categories', verbose_name='Категория')
@@ -45,7 +52,7 @@ class Title(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     class Meta:
         verbose_name = 'Название произведения'
         verbose_name_plural = 'Названия произведений'
@@ -59,9 +66,26 @@ class Review(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name='review',
                                verbose_name='Автор ревью')
-    score = models.IntegerField(verbose_name='Оценка произведения')
+    score = models.IntegerField(verbose_name='Оценка произведения',
+                                help_text='Укажите рейтинг',
+                                validators=[
+                                    MinValueValidator(1,
+                                                      message='Оценка не может быть меньше 0'),
+                                    MaxValueValidator(10,
+                                                      message='Оценка не может быть больше 10')
+                                ])
     pub_date = models.DateTimeField(auto_now_add=True,
                                     verbose_name='Дата публикации')
+
+    class Meta:
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'
+        constraints = [
+            models.UniqueConstraint(
+                fields=('author', 'title'),
+                name='unique_author_title'
+            )
+        ]
 
     def __str__(self):
         return self.text
@@ -78,8 +102,8 @@ class Comments(models.Model):
                                verbose_name='Автор комментария')
     pub_date = models.DateTimeField(auto_now_add=True,
                                     verbose_name='Дата публикации')
-    
+
     class Meta:
         ordering = ('-pub_date',)
         verbose_name = 'Комментарий'
-        verbose_name_plural = 'Коментарии'
+        verbose_name_plural = 'Комментарии'
