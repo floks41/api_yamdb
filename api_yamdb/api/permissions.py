@@ -21,9 +21,7 @@ class IsAdmin(BasePermission):
             return True
         if not request.user.is_authenticated:
             return False
-        return (request.user.is_authenticated
-                and request.user.role is not None
-                and request.user.role == 'admin')
+        return request.user.role == 'admin'
 
 
 class IsAdminOrReadOnly(BasePermission):
@@ -34,8 +32,7 @@ class IsAdminOrReadOnly(BasePermission):
             return True
         if not request.user.is_authenticated:
             return False
-        return (request.user.role is not None
-                and request.user.role == 'admin')
+        return request.user.role == 'admin'
 
 
 class IsAuthorModeratorAdminOrReadonly(BasePermission):
@@ -44,22 +41,21 @@ class IsAuthorModeratorAdminOrReadonly(BasePermission):
     В остальные случаях разрешены безопасные методы HTTP: GET, HEAD, OPTIONS.
     POST метод разрешен только авторизованным пользователям.
     """
-    def has_permission(self, request, view):
-        """Ограничение на уровне представления."""
-        if request.user.is_superuser or request.method in SAFE_METHODS:
-            return True
-        if request.method == 'POST' and request.user.is_authenticated:
-            return True
-        if request.method in ['PATCH', 'DELETE'] and not request.user.is_authenticated:
-            return False
-        return True
+    # def has_permission(self, request, view):
+        # """Ограничение на уровне представления."""
+        # if request.user.is_superuser or request.method in SAFE_METHODS:
+        #     return True
+        # if request.method == 'POST' and request.user.is_authenticated:
+        #     return True
+        # if request.method in ['PATCH', 'DELETE'] and not request.user.is_authenticated:
+        #     return False
+        # return True
 
     def has_object_permission(self, request, view, obj):
         """Ограничение на уровне объекта."""
-        if request.user.is_superuser or request.method in SAFE_METHODS:
-            return True
-        if request.method in ['PATCH', 'DELETE'] and request.user.is_authenticated:
-            return (obj.author == request.user
-                    or (request.user.role == 'moderator'
-                        or request.user.role == 'admin'))
-        return False
+        return (
+            request.user.is_superuser 
+            or request.method in SAFE_METHODS
+            or (request.user.is_authenticated
+                and (obj.author == request.user
+                     or request.user.role in ('moderator', 'admin'))))
