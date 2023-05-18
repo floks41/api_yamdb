@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
+from django.db.models import CheckConstraint, Q
 
 
 USER_ROLES = (
@@ -14,6 +15,7 @@ class User(AbstractUser):
     email = models.EmailField(
         verbose_name='Адрес электронной почты',
         unique=True,
+        max_length=254,
         error_messages={
             'unique': _("A user with that email address already exists."),
         })
@@ -36,3 +38,12 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+    
+    class Meta:
+        constraints = [
+            CheckConstraint(
+                check=~Q(username='me'),
+                name='username_not_me'
+            )
+        ]
+        ordering = ['id']
