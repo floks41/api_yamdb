@@ -74,13 +74,8 @@ class AuthSignUpView(APIView):
                   message=confirmation_code,
                   from_email="admin@yamdb.fun",
                   recipient_list=[user.email, ])
-        return Response(
-            {
-                'email': email,
-                'username': username
-            },
-            status=status.HTTP_200_OK
-        )
+        return Response(data=serializer.validated_data,
+                        status=status.HTTP_200_OK)
 
 
 class UsersViewSet(viewsets.ModelViewSet):
