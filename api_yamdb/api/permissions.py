@@ -13,7 +13,7 @@ class IsAuthorOrReadOnly(BasePermission):
         """Ограничение на уровне объекта."""
         return (
             request.user.is_superuser
-            or request.method in SAFE_METHODS 
+            or request.method in SAFE_METHODS
             or obj.author == request.user)
 
 
