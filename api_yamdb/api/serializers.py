@@ -77,11 +77,10 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate(self, data):
-        request = self.context['request']
-        title_id = self.context['view'].kwargs.get('title_id')
-        title = get_object_or_404(Title, pk=title_id)
-        author = request.user
-        if request.method == 'POST':
+        title = get_object_or_404(
+            Title, pk=self.context['view'].kwargs.get('title_id'))
+        author = self.context.get('request').user
+        if self.context.get('request').method == 'POST':
             if Review.objects.filter(
                     title=title, author=author
             ).exists():
