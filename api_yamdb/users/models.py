@@ -1,13 +1,20 @@
+"""Модуль моделей для приложения USERS проекта API_Yamdb."""
+
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.db.models import CheckConstraint, Q, UniqueConstraint
 
+USER_ROLE = 'user'
+MODERATOR_ROLE = 'moderator'
+ADMIN_ROLE = 'admin'
+STAFF_USER_ROLES = (MODERATOR_ROLE, ADMIN_ROLE)
 
 USER_ROLES = (
-    ('user', 'пользователь'),
-    ('moderator', 'модератор'),
-    ('admin', 'администратор')
+    (USER_ROLE, 'пользователь'),
+    (MODERATOR_ROLE, 'модератор'),
+    (ADMIN_ROLE, 'администратор')
 )
 
 

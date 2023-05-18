@@ -1,4 +1,8 @@
+"""Модуль разрешений для приложения API проекта API_Yamdb."""
+
+
 from rest_framework.permissions import SAFE_METHODS, BasePermission
+from users.models import ADMIN_ROLE, STAFF_USER_ROLES
 
 
 class IsAuthorOrReadOnly(BasePermission):
@@ -7,20 +11,20 @@ class IsAuthorOrReadOnly(BasePermission):
     """
     def has_object_permission(self, request, view, obj):
         """Ограничение на уровне объекта."""
-        if request.user.is_superuser:
-            return True
-        return request.method in SAFE_METHODS or obj.author == request.user
+        return (
+            request.user.is_superuser
+            or request.method in SAFE_METHODS 
+            or obj.author == request.user)
 
 
 class IsAdmin(BasePermission):
     """Доступ разрешен только администратору,
     проверка на уровне представления."""
-
     def has_permission(self, request, view):
         return (
             request.user.is_superuser
             or (request.user.is_authenticated
-                and request.user.role == 'admin'))
+                and request.user.role == ADMIN_ROLE))
 
 
 class IsAdminOrReadOnly(BasePermission):
@@ -28,10 +32,10 @@ class IsAdminOrReadOnly(BasePermission):
     проверка на уровне представления."""
     def has_permission(self, request, view):
         return (
-            request.user.is_superuser 
+            request.user.is_superuser
             or request.method in SAFE_METHODS
             or (request.user.is_authenticated
-                and request.user.role == 'admin'))
+                and request.user.role == ADMIN_ROLE))
 
 
 class IsAuthorModeratorAdminOrReadonly(BasePermission):
@@ -47,4 +51,4 @@ class IsAuthorModeratorAdminOrReadonly(BasePermission):
             or request.method in SAFE_METHODS
             or (request.user.is_authenticated
                 and (obj.author == request.user
-                     or request.user.role in ('moderator', 'admin'))))
+                     or request.user.role in STAFF_USER_ROLES)))
