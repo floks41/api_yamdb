@@ -1,5 +1,4 @@
 from datetime import datetime
-from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from users.models import User
@@ -68,14 +67,12 @@ class Review(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name='review',
                                verbose_name='Автор ревью')
-    score = models.IntegerField(verbose_name='Оценка произведения',
-                                help_text='Укажите рейтинг',
-                                validators=[
-                                    MinValueValidator(1,
-                                                      message='Оценка не может быть меньше 0'),
-                                    MaxValueValidator(10,
-                                                      message='Оценка не может быть больше 10')
-                                ])
+    score = models.IntegerField(
+        verbose_name='Оценка произведения',
+        help_text='Укажите рейтинг',
+        validators=[
+            MinValueValidator(1, message='Оценка не может быть меньше 0'),
+            MaxValueValidator(10, message='Оценка не может быть больше 10')])
     pub_date = models.DateTimeField(auto_now_add=True,
                                     verbose_name='Дата публикации')
 
