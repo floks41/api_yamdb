@@ -1,8 +1,12 @@
 from django.urls import include, path
 from rest_framework import routers
-from users.views import AuthGetTokenView, AuthSignUpView, UsersView
+
 from .views import (CategoryViewSet, CommentViewSet, GenreViewSet,
                     ReviewViewSet, TitleViewSet)
+
+from users.views import AuthGetTokenView, AuthSignUpView
+from users.views import UsersViewSet
+
 
 
 class NoPutRouter(routers.DefaultRouter):
@@ -30,7 +34,16 @@ app_name = 'api'
 
 urlpatterns = [
     path('', include(router_v1.urls)),
-    path('users/', UsersView.as_view()),
     path('auth/token/', AuthGetTokenView.as_view()),
     path('auth/signup/', AuthSignUpView.as_view()),
+]
+
+router_v1.register(
+    'users', UsersViewSet, basename='users'
+)
+
+app_name = 'api'
+
+urlpatterns = [
+    path('', include(router_v1.urls))
 ]

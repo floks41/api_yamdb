@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from reviews.models import Category, Genre, Review, Title
 from api.filters import TitleFilter
 from api.mixins import CreateDestroyListViewSet
+
 from api.permissions import IsAdminOrReadOnly, IsAuthorModeratorAdminOrReadonly
 from api.serializers import (CategorySerializer, CommentsSerializer,
                              GenreSerializer, ReviewSerializer,
@@ -52,10 +53,12 @@ class TitleViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     """Вьюсет для отзывов."""
     serializer_class = ReviewSerializer
+
     permission_classes = (
         IsAuthenticatedOrReadOnly,
         IsAuthorModeratorAdminOrReadonly,
     )
+
     pagination_class = LimitOffsetPagination
 
     def get_title(self):
@@ -71,9 +74,11 @@ class ReviewViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     """Вьюсет для комментариев."""
     serializer_class = CommentsSerializer
+
     permission_classes = (
         IsAuthenticatedOrReadOnly,
         IsAuthorModeratorAdminOrReadonly,)
+
 
     def get_queryset(self):
         review = get_object_or_404(Review, pk=self.kwargs.get("review_id"))
