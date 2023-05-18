@@ -1,6 +1,3 @@
-"""Модуль разрешений для представлений приложения Api."""
-
-
 from rest_framework.permissions import SAFE_METHODS, BasePermission
 
 
@@ -31,8 +28,7 @@ class IsAdmin(BasePermission):
 
 class IsAdminOrReadOnly(BasePermission):
     """Небезопасные методы HTTP разрешены только администратору,
-    проверка на уровне представления.
-    """
+    проверка на уровне представления."""
     def has_permission(self, request, view):
         if request.user.is_superuser or request.method in SAFE_METHODS:
             return True
@@ -42,7 +38,7 @@ class IsAdminOrReadOnly(BasePermission):
                 and request.user.role == 'admin')
 
 
-class IsAuthorModeratorAdminOrReadonly(BaseException):
+class IsAuthorModeratorAdminOrReadonly(BasePermission):
     """Небезопасные методы HTTP разрешены только
     автору, модератору или администратору.
     В остальные случаях разрешены безопасные методы HTTP: GET, HEAD, OPTIONS.
