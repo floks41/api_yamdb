@@ -37,13 +37,12 @@ class Title(models.Model):
     """Модель произведений."""
     name = models.CharField(max_length=255,
                             verbose_name='Название произведения')
-    year = models.IntegerField(verbose_name='Год выпуска',
-                               validators=[MinValueValidator(0,
-                                                             message='Год выпуска не может быть меньше 0'),
-                                           MaxValueValidator(
-                                               datetime.now().year,
-                                               message='Год выпуска не может быть больше текущего')
-                                           ])
+    year = models.IntegerField(
+        verbose_name='Год выпуска', validators=[MinValueValidator(
+            0, message='Год выпуска не может быть меньше 0'
+        ), MaxValueValidator(
+            datetime.now().year,
+            message='Год выпуска не может быть больше текущего')])
     description = models.TextField(blank=True, null=True,
                                    verbose_name='Описание')
     category = models.ForeignKey(
