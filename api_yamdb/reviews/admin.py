@@ -20,7 +20,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ('text',  'author')
+    list_display = ('text', 'author')
 
 
 @admin.register(Comments)
