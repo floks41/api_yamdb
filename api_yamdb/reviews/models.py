@@ -28,6 +28,7 @@ class Genre(models.Model):
         return self.name
 
     class Meta:
+        ordering = ['-id']
         verbose_name = 'Жанр'
         verbose_name_plural = 'Жанры'
 
