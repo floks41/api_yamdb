@@ -17,11 +17,10 @@ class IsAdmin(BasePermission):
     проверка на уровне представления."""
 
     def has_permission(self, request, view):
-        if request.user.is_superuser:
-            return True
-        if not request.user.is_authenticated:
-            return False
-        return request.user.role == 'admin'
+        return (
+            request.user.is_superuser
+            or (request.user.is_authenticated
+                and request.user.role == 'admin'))
 
 
 class IsAdminOrReadOnly(BasePermission):
