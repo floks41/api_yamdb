@@ -41,20 +41,10 @@ class IsAuthorModeratorAdminOrReadonly(BasePermission):
     В остальные случаях разрешены безопасные методы HTTP: GET, HEAD, OPTIONS.
     POST метод разрешен только авторизованным пользователям.
     """
-    # def has_permission(self, request, view):
-        # """Ограничение на уровне представления."""
-        # if request.user.is_superuser or request.method in SAFE_METHODS:
-        #     return True
-        # if request.method == 'POST' and request.user.is_authenticated:
-        #     return True
-        # if request.method in ['PATCH', 'DELETE'] and not request.user.is_authenticated:
-        #     return False
-        # return True
-
     def has_object_permission(self, request, view, obj):
         """Ограничение на уровне объекта."""
         return (
-            request.user.is_superuser 
+            request.user.is_superuser
             or request.method in SAFE_METHODS
             or (request.user.is_authenticated
                 and (obj.author == request.user

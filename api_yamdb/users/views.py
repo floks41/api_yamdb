@@ -29,11 +29,11 @@ class AuthGetTokenView(APIView):
         else:
             return Response('Wrong username.',
                             status=status.HTTP_404_NOT_FOUND)
-        
+
         if user.confirmation_code != confirmation_code:
             return Response('Wrong confirmation_code.',
                             status=status.HTTP_400_BAD_REQUEST)
-        
+
         token = RefreshToken.for_user(user)
         return Response(
             {
@@ -93,11 +93,11 @@ class UsersViewSet(viewsets.ModelViewSet):
             permission_classes=(IsAuthenticated,))
     def me(self, request, *args, **kwargs):
         user = get_object_or_404(User, username=request.user.username)
-        
+
         if request.method == 'GET':
             serializer = UserMeSerializer(user)
             return Response(serializer.data)
-        
+
         if request.method == 'PATCH':
             serializer = UserMeSerializer(user, data=request.data)
             if serializer.is_valid():
