@@ -2,7 +2,6 @@
 
 
 from api.permissions import IsAdmin
-from django.contrib.auth.base_user import BaseUserManager
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
@@ -15,7 +14,8 @@ from users.serializers import (AuthGetTokenSerializer, SignUpSerializer,
 
 
 class AuthViewSet(viewsets.GenericViewSet):
-    from ._send_confirmation_code import send_user_confirmation_code
+    from ._confirmation_code_utils import (generate_confirmation_code,
+                                           send_user_confirmation_code)
     permission_classes = (AllowAny,)
 
     @action(detail=False, methods=['POST'], name='Get token')
@@ -37,7 +37,7 @@ class AuthViewSet(viewsets.GenericViewSet):
         serializer = SignUpSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save(
-                confirmation_code=BaseUserManager.make_random_password(None))
+                confirmation_code=self.generate_confirmation_code())
             self.send_user_confirmation_code(user)
             return Response(data=serializer.validated_data,
                             status=status.HTTP_200_OK)
