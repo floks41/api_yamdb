@@ -41,6 +41,4 @@ app_name = 'api'
 
 urlpatterns = [
     path('', include(router_v1.urls)),
-    # path('auth/token/', AuthGetTokenView2.as_view()),
-    # path('auth/signup/', AuthSignUpView.as_view()),
 ]
