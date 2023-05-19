@@ -75,7 +75,7 @@ class Command(BaseCommand):
         for row in DictReader(
                 open(f'{PATH}{GENRE_TITLE}')):
             Title.objects.get(
-                id=row['title_id']).load_genre.add(row['genre_id'])
+                id=row['title_id']).genre.add(row['genre_id'])
 
         logger.info(f'{GENRE_TITLE} {MESSAGE}')
 
@@ -94,46 +94,41 @@ class Command(BaseCommand):
         logger.info(f'{USERS} {MESSAGE}')
 
     def load_review(self):
-        try:
-            for row in DictReader(
-                    open(f'{PATH}{REVIEW}', encoding=UTF)):
-                Review.objects.get_or_create(
-                    id=row['id'],
-                    title=Title.objects.get(pk=row['title_id']),
-                    text=row['text'],
-                    author=User.objects.get(id=row['author']),
-                    score=row['score'],
-                    pub_date=row['pub_date'])
-
-        except IntegrityError as err:
-            logger.error(err)
-            exit()
+        for row in DictReader(
+                open(f'{PATH}{REVIEW}', encoding=UTF)):
+            Review.objects.get_or_create(
+                id=row['id'],
+                title=Title.objects.get(pk=row['title_id']),
+                text=row['text'],
+                author=User.objects.get(id=row['author']),
+                score=row['score'],
+                pub_date=row['pub_date'])
 
         logger.info(f'{REVIEW} {MESSAGE}')
 
     def load_comments(self):
-        try:
-            for row in DictReader(
-                    open(f'{PATH}{COMMENTS}', encoding=UTF)):
-                Comments.objects.get_or_create(
-                    id=row['id'],
-                    review=Review.objects.get(id=row['review_id']),
-                    text=row['text'],
-                    author=User.objects.get(id=row['author']),
-                    pub_date=row['pub_date']
+        for row in DictReader(
+                open(f'{PATH}{COMMENTS}', encoding=UTF)):
+            Comments.objects.get_or_create(
+                id=row['id'],
+                review=Review.objects.get(id=row['review_id']),
+                text=row['text'],
+                author=User.objects.get(id=row['author']),
+                pub_date=row['pub_date']
                 )
-
-        except IntegrityError as err:
-            logger.error(err)
-            exit()
 
         logger.info(f'{COMMENTS} {MESSAGE}')
 
     def handle(self, *args, **options):
-        self.load_category()
-        self.load_genre()
-        self.load_title()
-        self.load_genre_title()
-        self.load_users()
-        self.load_review()
-        self.load_comments()
+        try:
+            self.load_category()
+            self.load_genre()
+            self.load_title()
+            self.load_genre_title()
+            self.load_users()
+            self.load_review()
+            self.load_comments()
+
+        except IntegrityError as err:
+            logger.error(err)
+            exit()
