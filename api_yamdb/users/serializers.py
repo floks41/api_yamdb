@@ -10,16 +10,16 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('username', 'email', 'first_name',
                   'last_name', 'bio', 'role')
 
-    def validate_username(self, value):
-        if value.lower() == 'me':
-            raise serializers.ValidationError(
-                'User cannot have username \'me\'.')
-        pattern = re.compile(r'^[\w.@+-]+\Z')
-        if not pattern.match(value):
-            raise serializers.ValidationError(
-                'Username. 150 characters or fewer. '
-                'Letters, digits and @/./+/-/_ only.')
-        return value
+    # def validate_username(self, value):
+    #     if value.lower() == 'me':
+    #         raise serializers.ValidationError(
+    #             'User cannot have username \'me\'.')
+    #     pattern = re.compile(r'^[\w.@+-]+\Z')
+    #     if not pattern.match(value):
+    #         raise serializers.ValidationError(
+    #             'Username. 150 characters or fewer. '
+    #             'Letters, digits and @/./+/-/_ only.')
+    #     return value
     
     # def validate_email(self, value):
     #     if self.instance:
@@ -30,12 +30,12 @@ class UserSerializer(serializers.ModelSerializer):
     #             raise serializers.ValidationError(
     #                 'User with that email exists already.')
     #     return value
-    def validate(self, data):
-        if not self.instance:
-            if self.Meta.model.objects.filter(username=data.get('username', None)).exists():
-                self.instance = self.Meta.model.objects.filter(username=data.get('username', None))
-                self.is_valid()
-        return data
+    # def validate(self, data):
+    #     if not self.instance:
+    #         if self.Meta.model.objects.filter(username=data.get('username', None)).exists():
+    #             self.instance = self.Meta.model.objects.filter(username=data.get('username', None))
+    #             self.is_valid()
+    #     return data
             
 
 
@@ -43,14 +43,19 @@ class UserMeSerializer(UserSerializer):
     username = serializers.CharField(required=False, max_length=150)
     email = serializers.EmailField(required=False, max_length=254)
 
+    def validate_username(self, value):
+        if value.lower() == 'me':
+            raise serializers.ValidationError(
+                'User cannot have username \'me\'.')
+        pattern = re.compile(r'^[\w.@+-]+\Z')
+        if not pattern.match(value):
+            raise serializers.ValidationError(
+                'Username. 150 characters or fewer. '
+                'Letters, digits and @/./+/-/_ only.')
+        return value
+
     class Meta(UserSerializer.Meta):
         read_only_fields = ('role',)
-
-
-class UserAuthSignUpSerializer(UserMeSerializer):
-    
-    class Meta(UserMeSerializer.Meta):
-        fields = ('username', 'email')
 
 
 class SignUpSerializer(UserSerializer):
@@ -99,11 +104,9 @@ class AuthGetTokenSerializer(SignUpSerializer):
         return str(RefreshToken.for_user(obj).access_token)
 
     def validate_confirmation_code(self, value):
-        if self.check_object() or self.instance:
+        if self.check_object(): # or self.instance
             if hasattr(self.instance, 'confirmation_code') and value != self.instance.confirmation_code:
                 raise serializers.ValidationError('Wrong confirmation code.')
-        # else:
-        #     raise serializers.ValidationError('Wrong username.')
         return value
     def validate_username(self, value):
         if not self.check_object():
