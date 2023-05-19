@@ -23,19 +23,20 @@ FORMATTER = logging.Formatter(
 )
 
 
-def get_logger(name):
-    logger = logging.getLogger(name)
-    logger.setLevel(logging.DEBUG)
-    handler = logging.StreamHandler(sys.stdout)
-    handler.setFormatter(FORMATTER)
-    logger.addHandler(handler)
-    return logger
-
-
-logger = get_logger('load_data')
+# def get_logger(name):
+#     logger = logging.getLogger(name)
+#     logger.setLevel(logging.DEBUG)
+#     handler = logging.StreamHandler(sys.stdout)
+#     handler.setFormatter(FORMATTER)
+#     logger.addHandler(handler)
+#     return logger
+#
+#
+# logger = get_logger('load_data')
 
 
 class Command(BaseCommand):
+    help = 'Загружает данные из csv файлов в базу даных'
 
     def exist(self):
         pass
@@ -48,7 +49,11 @@ class Command(BaseCommand):
                 name=row['name'],
                 slug=row['slug'])
 
-        logger.info(f'{GENRE} {MESSAGE}')
+        self.stdout.write(self.style.SUCCESS(
+            f'{GENRE} {MESSAGE}')
+        )
+
+        # logger.info(f'{GENRE} {MESSAGE}')
 
     def load_category(self):
         for row in DictReader(
@@ -58,7 +63,11 @@ class Command(BaseCommand):
                 name=row['name'],
                 slug=row['slug'])
 
-        logger.info(f'{CATEGORY} {MESSAGE}')
+        self.stdout.write(self.style.SUCCESS(
+            f'{CATEGORY} {MESSAGE}')
+        )
+
+        #logger.info(f'{CATEGORY} {MESSAGE}')
 
     def load_title(self):
         for row in DictReader(
@@ -69,7 +78,11 @@ class Command(BaseCommand):
                 year=row['year'],
                 category=Category.objects.get(id=row['category']))
 
-        logger.info(f'{TITLE} {MESSAGE}')
+        self.stdout.write(self.style.SUCCESS(
+            f'{TITLE} {MESSAGE}')
+        )
+
+        #logger.info(f'{TITLE} {MESSAGE}')
 
     def load_genre_title(self):
         for row in DictReader(
@@ -77,7 +90,10 @@ class Command(BaseCommand):
             Title.objects.get(
                 id=row['title_id']).genre.add(row['genre_id'])
 
-        logger.info(f'{GENRE_TITLE} {MESSAGE}')
+        self.stdout.write(self.style.SUCCESS(
+            f'{GENRE_TITLE} {MESSAGE}')
+        )
+        #logger.info(f'{GENRE_TITLE} {MESSAGE}')
 
     def load_users(self):
         for row in DictReader(
@@ -91,7 +107,10 @@ class Command(BaseCommand):
                 last_name=row['last_name'],
             )
 
-        logger.info(f'{USERS} {MESSAGE}')
+        self.stdout.write(self.style.SUCCESS(
+            f'{USERS} {MESSAGE}')
+        )
+        #logger.info(f'{USERS} {MESSAGE}')
 
     def load_review(self):
         for row in DictReader(
@@ -104,7 +123,10 @@ class Command(BaseCommand):
                 score=row['score'],
                 pub_date=row['pub_date'])
 
-        logger.info(f'{REVIEW} {MESSAGE}')
+        self.stdout.write(self.style.SUCCESS(
+            f'{REVIEW} {MESSAGE}')
+        )
+        #logger.info(f'{REVIEW} {MESSAGE}')
 
     def load_comments(self):
         for row in DictReader(
@@ -114,10 +136,12 @@ class Command(BaseCommand):
                 review=Review.objects.get(id=row['review_id']),
                 text=row['text'],
                 author=User.objects.get(id=row['author']),
-                pub_date=row['pub_date']
-                )
+                pub_date=row['pub_date'])
 
-        logger.info(f'{COMMENTS} {MESSAGE}')
+        self.stdout.write(self.style.SUCCESS(
+            f'{REVIEW} {MESSAGE}')
+        )
+        #logger.info(f'{COMMENTS} {MESSAGE}')
 
     def handle(self, *args, **options):
         try:
@@ -130,5 +154,7 @@ class Command(BaseCommand):
             self.load_comments()
 
         except IntegrityError as err:
-            logger.error(err)
+            self.stdout.write(self.style.ERROR(
+                f'ERROR - {err}')
+            )
             exit()
