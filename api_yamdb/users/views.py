@@ -10,8 +10,8 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from users.models import User
-from users.serializers import (UserMeSerializer,
-                               UserSerializer, SignUpSerializer, AuthGetTokenSerializer)
+from users.serializers import (AuthGetTokenSerializer, SignUpSerializer,
+                               UserMeSerializer, UserSerializer)
 
 
 class AuthViewSet(viewsets.GenericViewSet):
@@ -43,7 +43,7 @@ class AuthViewSet(viewsets.GenericViewSet):
                             status=status.HTTP_200_OK)
         return Response(serializer.errors,
                         status=status.HTTP_400_BAD_REQUEST)
-        
+
 
 class UsersViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAdmin,)
@@ -53,7 +53,7 @@ class UsersViewSet(viewsets.ModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = (filters.SearchFilter,)
     search_fields = ('username',)
-    
+
     def update(self, request, *args, **kwargs):
         if request.method == 'PUT':
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)

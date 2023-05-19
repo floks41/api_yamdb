@@ -1,15 +1,15 @@
-from rest_framework import serializers, status
+from rest_framework import serializers
 from users.models import User
 import re
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class UserSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name',
-                  'last_name', 'bio', 'role')      
+                  'last_name', 'bio', 'role')
 
 
 class UserUsernameValidationSerializer(UserSerializer):
@@ -36,34 +36,32 @@ class UserMeSerializer(UserUsernameValidationSerializer):
 class SignUpSerializer(UserUsernameValidationSerializer):
     username = serializers.CharField(required=True, max_length=150)
     email = serializers.EmailField(required=True, max_length=254)
-    is_exist_checked = False
-    has_object = False
-    
+    is_object_existance_checked = False
+    is_object_exists = False
+
     def check_object(self):
         """Подбирает объект из модели, если такой есть.
-        
-        Сохраняет в self.instance. Запоминает факт проверки и результат 
-        в self.is_exist_checked и self.has_object.
+        Сохраняет в self.instance. Запоминает факт проверки и результат
+        в self. is_object_existance_checked и self.is_object_exists.
         При отсутвии объекта исключений не выдает.
         """
-        if self.is_exist_checked:
-            return self.has_object
+        if self.is_object_existance_checked:
+            return self.is_object_exists
         username = self.initial_data.get('username')
-        if username and self.Meta.model.objects.filter(username=username).exists():
+        if (username and self.Meta.model.objects.filter(
+                username=username).exists()):
             self.instance = self.Meta.model.objects.get(username=username)
-            self.has_object = True
-            self.is_exist_checked = True
-        return self.has_object
+            self.is_object_exists = True
+            self.is_object_existance_checked = True
+        return self.is_object_exists
 
-    
     def validate_email(self, value):
         if self.check_object() or self.instance:
             if value != self.instance.email:
                 raise serializers.ValidationError('Wrong email.')
         else:
             if self.Meta.model.objects.filter(
-                email=self.initial_data.get('email')
-                ).exists():
+                    email=self.initial_data.get('email')).exists():
                 raise serializers.ValidationError(
                     'User with that email exists already.')
         return value
@@ -71,22 +69,25 @@ class SignUpSerializer(UserUsernameValidationSerializer):
     class Meta(UserUsernameValidationSerializer.Meta):
         fields = ('username', 'email')
 
+
 class AuthGetTokenSerializer(SignUpSerializer):
     token = serializers.SerializerMethodField()
+
     def get_token(self, obj):
         return str(RefreshToken.for_user(obj).access_token)
 
     def validate_confirmation_code(self, value):
         if self.check_object():
-            if (hasattr(self.instance, 'confirmation_code') 
-                and value != self.instance.confirmation_code):
+            if (hasattr(self.instance, 'confirmation_code')
+                    and value != self.instance.confirmation_code):
                 raise serializers.ValidationError('Wrong confirmation code.')
         return value
+
     def validate_username(self, value):
         if not self.check_object():
             raise serializers.ValidationError('Wrong username.')
         return super().validate_username(value)
-    
+
     class Meta(SignUpSerializer.Meta):
         write_only_fields = ('username', 'confirmation_code')
         fields = ('username', 'confirmation_code', 'token')

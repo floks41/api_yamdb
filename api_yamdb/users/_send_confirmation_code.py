@@ -12,4 +12,3 @@ def send_user_confirmation_code(self, user: User):
               message=user.confirmation_code,
               from_email=ADMIN_EMAIL,
               recipient_list=[user.email, ])
-    
