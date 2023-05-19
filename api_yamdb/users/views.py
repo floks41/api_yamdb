@@ -14,7 +14,27 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from users.models import User
 from users.serializers import (UserAuthSignUpSerializer, UserMeSerializer,
-                               UserSerializer, SignUpSerializer)
+                               UserSerializer, SignUpSerializer, AuthGetTokenSerializer)
+
+
+class AuthGetTokenView2(APIView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request):
+        
+        serializer = AuthGetTokenSerializer(data=request.data)
+        if serializer.is_valid():
+
+            return Response(data=serializer.validated_data,
+                            status=status.HTTP_200_OK)
+        print(serializer.errors)
+        status_code = status.HTTP_400_BAD_REQUEST
+        if request.data.get('username') and 'username' in serializer.errors:
+            status_code = 404 # status.HTTP_404_NOT_FOUND
+            return Response(status=status_code)
+        return Response(serializer.errors,
+                        status=status_code)
+
 
 
 class AuthGetTokenView(APIView):
@@ -55,14 +75,11 @@ class AuthSignUpView(APIView):
     permission_classes = (AllowAny,)
 
     def post(self, request):
-        # email = request.data.get('email', '')
-        # username = request.data.get('username', '')
-
+        
         serializer = SignUpSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save(confirmation_code=BaseUserManager.make_random_password(None))
-            # user.confirmation_code = BaseUserManager.make_random_password(self)
-            # user.save
+            
             send_mail(subject="Confirmation code",
                   message=user.confirmation_code,
                   from_email="admin@yamdb.fun",
@@ -70,7 +87,6 @@ class AuthSignUpView(APIView):
             return Response(data=serializer.validated_data,
                             status=status.HTTP_200_OK)
         return Response(serializer.errors,
-                        
                         status=status.HTTP_400_BAD_REQUEST)
         
 

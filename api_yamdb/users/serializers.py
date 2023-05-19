@@ -1,6 +1,7 @@
-from rest_framework import serializers
+from rest_framework import serializers, status
 from users.models import User
 import re
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -55,7 +56,6 @@ class UserAuthSignUpSerializer(UserMeSerializer):
 class SignUpSerializer(UserSerializer):
     username = serializers.CharField(required=True, max_length=150)
     email = serializers.EmailField(required=True, max_length=254)
-    corresponding_object: object
     is_exist_checked = False
     has_object = False
     
@@ -64,8 +64,6 @@ class SignUpSerializer(UserSerializer):
             return self.has_object
         username = self.initial_data.get('username')
         if username and self.Meta.model.objects.filter(username=username).exists():
-            # self.corresponding_object = self.Meta.model.objects.get(username=username)
-            # self.instance = self.corresponding_object
             self.instance = self.Meta.model.objects.get(username=username)
             self.has_object = True
             self.is_exist_checked = True
@@ -89,24 +87,29 @@ class SignUpSerializer(UserSerializer):
         else:
             if self.Meta.model.objects.filter(email=self.initial_data.get('email')).exists():
                     raise serializers.ValidationError(
-                        'User with that eamil exists already.')
+                        'User with that email exists already.')
         return value
 
-
-        # if self.instance:
-        #     if value != self.instance.email:
-        #         raise serializers.ValidationError({'email':'Wrong email1.'})
-        # else:
-        #     if self.check_object():
-        #         if self.corresponding_object.email != value:
-        #             raise serializers.ValidationError(
-        #                 'Wrong email2.')
-        #     else:
-        #         if self.Meta.model.objects.filter(email=self.initial_data.get('email')).exists():
-        #             raise serializers.ValidationError(
-        #                 'User with that eamil exists already.')
-        # return value
-    
     class Meta(UserSerializer.Meta):
         fields = ('username', 'email')
-   
+
+class AuthGetTokenSerializer(SignUpSerializer):
+    token = serializers.SerializerMethodField()
+    def get_token(self, obj):
+        return str(RefreshToken.for_user(obj).access_token)
+
+    def validate_confirmation_code(self, value):
+        if self.check_object() or self.instance:
+            if hasattr(self.instance, 'confirmation_code') and value != self.instance.confirmation_code:
+                raise serializers.ValidationError('Wrong confirmation code.')
+        # else:
+        #     raise serializers.ValidationError('Wrong username.')
+        return value
+    def validate_username(self, value):
+        if not self.check_object():
+            raise serializers.ValidationError('Wrong username.')
+        return super().validate_username(value)
+    
+    class Meta(SignUpSerializer.Meta):
+        write_only_fields = ('username', 'confirmation_code')
+        fields = ('username', 'confirmation_code', 'token')

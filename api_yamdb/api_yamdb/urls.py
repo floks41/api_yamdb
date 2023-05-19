@@ -13,7 +13,7 @@ urlpatterns = [
         name='redoc'
     ),
 ]
-urlpatterns += [
-    path('api/v1/auth/token/', AuthGetTokenView.as_view()),
-    path('api/v1/auth/signup/', AuthSignUpView.as_view()),
-]
+# urlpatterns += [
+#     path('api/v1/auth/token/', AuthGetTokenView.as_view()),
+#     path('api/v1/auth/signup/', AuthSignUpView.as_view()),
+# ]
