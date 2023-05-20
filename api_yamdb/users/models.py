@@ -1,6 +1,3 @@
-"""Модуль моделей для приложения USERS проекта API_Yamdb."""
-
-
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
@@ -24,7 +21,7 @@ class User(AbstractUser):
         unique=True,
         max_length=254,
         error_messages={
-            'unique': _("A user with that email address already exists."),
+            'unique': _("Пользователь с указанным email уже существует."),
         })
     role = models.CharField(
         max_length=255,

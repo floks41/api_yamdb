@@ -1,6 +1,3 @@
-"""Модуль разрешений для приложения API проекта API_Yamdb."""
-
-
 from rest_framework.permissions import SAFE_METHODS, BasePermission
 from users.models import ADMIN_ROLE, STAFF_USER_ROLES
 
