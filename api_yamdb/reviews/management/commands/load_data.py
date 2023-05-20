@@ -24,10 +24,7 @@ TABLES = {
 
 
 class Command(BaseCommand):
-    help = 'Загружает данные из csv файлов в базу даных'
-
-    def exist(self):
-        pass
+    help = 'Загружает данные из csv файлов в базу данных'
 
     # def load_genre_category_users(self):
     #     for model, csv_f in TABLES.items():
