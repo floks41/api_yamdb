@@ -7,7 +7,6 @@ from rest_framework_simplejwt.tokens import AccessToken
 from reviews.models import Category, Comments, Genre, Review, Title
 from users.models import User
 
-
 USERNAME_PATTERN = r'^[\w.@+-]+\Z'
 
 
@@ -28,6 +27,7 @@ class GenreSerializer(serializers.ModelSerializer):
 
 
 class CommentsSerializer(serializers.ModelSerializer):
+    """Сериализатор для комментариев."""
     review = serializers.SlugRelatedField(slug_field='text', read_only=True)
     author = serializers.SlugRelatedField(
         slug_field='username', read_only=True
@@ -98,7 +98,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    """Сериалайзер модели User, основной."""
+    """Сериализатор модели User, основной."""
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name',
@@ -106,8 +106,9 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserUsernameValidationSerializer(UserSerializer):
-    """Абстрактный сериалайзер для модели User.
-    С валидатором для поля username."""
+    """Абстрактный сериализатор для модели User
+    c валидатором для поля username.
+    """
     def validate_username(self, value):
         if value.lower() == 'me':
             raise serializers.ValidationError(
@@ -116,13 +117,13 @@ class UserUsernameValidationSerializer(UserSerializer):
         if not re.compile(USERNAME_PATTERN).match(value):
             raise serializers.ValidationError(
                 'Username. 150 символов или меньше. '
-                'Буквы, цыфры и @/./+/-/_ only.')
+                'Буквы, цифры и @/./+/-/_ only.')
 
         return value
 
 
 class UserMePatchSerializer(UserUsernameValidationSerializer):
-    """Сериалайзер модели User для эндпоинта users/me/ метода PATCH."""
+    """Сериализатор модели User для эндпоинта users/me/ метода PATCH."""
     username = serializers.CharField(required=False, max_length=150)
     email = serializers.EmailField(required=False, max_length=254)
 
@@ -131,7 +132,7 @@ class UserMePatchSerializer(UserUsernameValidationSerializer):
 
 
 class SignUpSerializer(UserUsernameValidationSerializer):
-    """Сериалайзер модели User для эндпоинта auth/signup/.
+    """Сериализатор модели User для эндпоинта auth/signup/.
     Регистрация пользователя.
     """
     username = serializers.CharField(required=True, max_length=150)
@@ -143,7 +144,7 @@ class SignUpSerializer(UserUsernameValidationSerializer):
         """Подбирает объект из модели, если такой есть.
         Сохраняет в self.instance. Запоминает факт проверки и результат
         в self.is_object_existance_checked и self.is_object_exists.
-        При отсутвии объекта исключений не выдает.
+        При отсутствии объекта исключений не выдает.
         """
         if self.is_object_existance_checked:
             return self.is_object_exists
@@ -173,7 +174,7 @@ class SignUpSerializer(UserUsernameValidationSerializer):
 
 
 class AuthGetTokenSerializer(SignUpSerializer):
-    """Сериалайзер модели User для эндпоинта auth/token/. Плучение токена."""
+    """Сериализатор модели User для эндпоинта auth/token/. Получение токена."""
     token = serializers.SerializerMethodField()
 
     def get_token(self, obj):
@@ -192,4 +193,3 @@ class AuthGetTokenSerializer(SignUpSerializer):
     class Meta(SignUpSerializer.Meta):
         write_only_fields = ('username', 'confirmation_code')
         fields = ('username', 'confirmation_code', 'token')
-
