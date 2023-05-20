@@ -1,12 +1,3 @@
-from api.filters import TitleFilter
-from api.mixins import CreateDestroyListViewSet
-from api.permissions import (IsAdmin, IsAdminOrReadOnly,
-                             IsAuthorModeratorAdminOrReadonly)
-from api.serializers import (AuthGetTokenSerializer, CategorySerializer,
-                             CommentsSerializer, GenreSerializer,
-                             ReviewSerializer, SignUpSerializer,
-                             TitleReadSerializer, TitleWriteSerializer,
-                             UserMePatchSerializer, UserSerializer)
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -20,6 +11,16 @@ from rest_framework.permissions import (AllowAny, IsAuthenticated,
 from rest_framework.response import Response
 from reviews.models import Category, Genre, Review, Title
 from users.models import User
+
+from api.filters import TitleFilter
+from api.mixins import CreateDestroyListViewSet
+from api.permissions import (IsAdmin, IsAdminOrReadOnly,
+                             IsAuthorModeratorAdminOrReadonly)
+from api.serializers import (AuthGetTokenSerializer, CategorySerializer,
+                             CommentsSerializer, GenreSerializer,
+                             ReviewSerializer, SignUpSerializer,
+                             TitleReadSerializer, TitleWriteSerializer,
+                             UserMePatchSerializer, UserSerializer)
 
 
 class CategoryViewSet(CreateDestroyListViewSet):
@@ -43,9 +44,8 @@ class GenreViewSet(CreateDestroyListViewSet):
 
 
 class TitleViewSet(viewsets.ModelViewSet):
-    """Вьюсет для произведений."""
-    queryset = Title.objects.annotate(
-        rating=Avg('review__score'))
+    """Вьюсет для моделей Title."""
+    queryset = Title.objects.annotate(rating=Avg('review__score'))
     permission_classes = (IsAuthenticatedOrReadOnly, IsAdminOrReadOnly,)
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend,)
@@ -58,14 +58,11 @@ class TitleViewSet(viewsets.ModelViewSet):
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
-    """Вьюсет для отзывов."""
+    """Вьюсет для моделей Review."""
     serializer_class = ReviewSerializer
-
     permission_classes = (
         IsAuthenticatedOrReadOnly,
-        IsAuthorModeratorAdminOrReadonly,
-    )
-
+        IsAuthorModeratorAdminOrReadonly)
     pagination_class = LimitOffsetPagination
 
     def get_title(self):
@@ -79,15 +76,14 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-    """Вьюсет для комментариев."""
+    """Вьюсет для моделей Comment."""
     serializer_class = CommentsSerializer
-
     permission_classes = (
         IsAuthenticatedOrReadOnly,
-        IsAuthorModeratorAdminOrReadonly,)
+        IsAuthorModeratorAdminOrReadonly)
 
     def get_queryset(self):
-        review = get_object_or_404(Review, pk=self.kwargs.get("review_id"))
+        review = get_object_or_404(Review, pk=self.kwargs.get('review_id'))
         return review.comments.all()
 
     def perform_create(self, serializer):
