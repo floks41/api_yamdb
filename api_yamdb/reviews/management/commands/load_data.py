@@ -1,4 +1,3 @@
-import csv
 from csv import DictReader
 
 from django.core.management import BaseCommand
@@ -37,7 +36,7 @@ class Command(BaseCommand):
     #             'r',
     #             encoding=UTF
     #         ) as csv_file:
-    #             reader = csv.DictReader(csv_file)
+    #             reader = DictReader(csv_file)
     #             model.objects.bulk_create(
     #                 model(**data) for data in reader
     #             )
@@ -46,7 +45,6 @@ class Command(BaseCommand):
     #         f'{CATEGORY} {MESSAGE}'
     #         f'{USERS} {MESSAGE}')
     #     )
-
 
     def load_genre(self):
         for row in DictReader(
@@ -60,7 +58,6 @@ class Command(BaseCommand):
             f'{GENRE} {MESSAGE}')
         )
 
-
     def load_category(self):
         for row in DictReader(
                 open(f'{PATH}{CATEGORY}', encoding=UTF)):
@@ -72,7 +69,6 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(
             f'{CATEGORY} {MESSAGE}')
         )
-
 
     def load_title(self):
         for row in DictReader(
@@ -144,18 +140,17 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         try:
-            #self.load_genre_category_users()
+            # self.load_genre_category_users()
             self.load_category()
             self.load_genre()
             self.load_title()
             self.load_genre_title()
             self.load_users()
-            # self.load_review()
-            # self.load_comments()
+            self.load_review()
+            self.load_comments()
 
         except IntegrityError as err:
             self.stdout.write(self.style.ERROR(
                 f'ERROR - {err}')
             )
             exit()
-
