@@ -29,7 +29,7 @@ class User(AbstractUser):
     role = models.CharField(
         max_length=255,
         choices=USER_ROLES,
-        default=USER_ROLES[0][0],
+        default=USER_ROLE,
         verbose_name='Категория пользователя')
 
     bio = models.CharField(

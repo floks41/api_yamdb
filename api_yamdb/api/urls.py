@@ -4,7 +4,7 @@ from rest_framework import routers
 from .views import (CategoryViewSet, CommentViewSet, GenreViewSet,
                     ReviewViewSet, TitleViewSet)
 
-from users.views import AuthGetTokenView, AuthSignUpView
+from users.views import AuthViewSet
 from users.views import UsersViewSet
 
 
@@ -17,9 +17,9 @@ class NoPutRouter(routers.DefaultRouter):
         return bound_methods
 
 
-router_v1 = NoPutRouter()
+# router_v1 = NoPutRouter()
 
-#router_v1 = routers.DefaultRouter()
+router_v1 = routers.DefaultRouter()
 router_v1.register('categories', CategoryViewSet, basename='categories')
 router_v1.register('genres', GenreViewSet, basename='genres')
 router_v1.register('titles', TitleViewSet, basename='titles')
@@ -33,11 +33,12 @@ router_v1.register(
 router_v1.register(
     'users', UsersViewSet, basename='users'
 )
+router_v1.register(
+    'auth', AuthViewSet, basename='auth'
+)
 
 app_name = 'api'
 
 urlpatterns = [
     path('', include(router_v1.urls)),
-    path('auth/token/', AuthGetTokenView.as_view()),
-    path('auth/signup/', AuthSignUpView.as_view()),
 ]
