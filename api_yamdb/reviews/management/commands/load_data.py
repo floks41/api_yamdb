@@ -24,10 +24,7 @@ TABLES = {
 
 
 class Command(BaseCommand):
-    help = 'Загружает данные из csv файлов в базу даных'
-
-    def exist(self):
-        pass
+    help = 'Загружает данные из csv файлов в базу данных'
 
     # def load_genre_category_users(self):
     #     for model, csv_f in TABLES.items():
@@ -49,10 +46,7 @@ class Command(BaseCommand):
     def load_genre(self):
         for row in DictReader(
                 open(f'{PATH}{GENRE}', encoding=UTF)):
-            Genre.objects.get_or_create(
-                id=row['id'],
-                name=row['name'],
-                slug=row['slug'])
+            Genre.objects.get_or_create(**row)
 
         self.stdout.write(self.style.SUCCESS(
             f'{GENRE} {MESSAGE}')
@@ -61,10 +55,7 @@ class Command(BaseCommand):
     def load_category(self):
         for row in DictReader(
                 open(f'{PATH}{CATEGORY}', encoding=UTF)):
-            Category.objects.get_or_create(
-                id=row['id'],
-                name=row['name'],
-                slug=row['slug'])
+            Category.objects.get_or_create(**row)
 
         self.stdout.write(self.style.SUCCESS(
             f'{CATEGORY} {MESSAGE}')
@@ -74,10 +65,7 @@ class Command(BaseCommand):
         for row in DictReader(
                 open(f'{PATH}{TITLE}', encoding=UTF)):
             Title.objects.get_or_create(
-                id=row['id'],
-                name=row['name'],
-                year=row['year'],
-                category=Category.objects.get(id=row['category']))
+                category=Category.objects.get(id=row.pop('category')), **row)
 
         self.stdout.write(self.style.SUCCESS(
             f'{TITLE} {MESSAGE}')
@@ -96,14 +84,7 @@ class Command(BaseCommand):
     def load_users(self):
         for row in DictReader(
                 open(f'{PATH}{USERS}', encoding=UTF)):
-            User.objects.get_or_create(
-                id=row['id'],
-                username=row['username'],
-                email=row['email'],
-                bio=row['bio'],
-                first_name=row['first_name'],
-                last_name=row['last_name'],
-            )
+            User.objects.get_or_create(**row)
 
         self.stdout.write(self.style.SUCCESS(
             f'{USERS} {MESSAGE}')
@@ -113,12 +94,9 @@ class Command(BaseCommand):
         for row in DictReader(
                 open(f'{PATH}{REVIEW}', encoding=UTF)):
             Review.objects.get_or_create(
-                id=row['id'],
-                title=Title.objects.get(pk=row['title_id']),
-                text=row['text'],
-                author=User.objects.get(id=row['author']),
-                score=row['score'],
-                pub_date=row['pub_date'])
+                title=Title.objects.get(pk=row.pop('title_id')),
+                author=User.objects.get(id=row.pop('author')),
+                **row)
 
         self.stdout.write(self.style.SUCCESS(
             f'{REVIEW} {MESSAGE}')
@@ -128,14 +106,12 @@ class Command(BaseCommand):
         for row in DictReader(
                 open(f'{PATH}{COMMENTS}', encoding=UTF)):
             Comments.objects.get_or_create(
-                id=row['id'],
-                review=Review.objects.get(id=row['review_id']),
-                text=row['text'],
-                author=User.objects.get(id=row['author']),
-                pub_date=row['pub_date'])
+                review=Review.objects.get(id=row.pop('review_id')),
+                author=User.objects.get(id=row.pop('author')),
+                **row)
 
         self.stdout.write(self.style.SUCCESS(
-            f'{REVIEW} {MESSAGE}')
+            f'{COMMENTS} {MESSAGE}')
         )
 
     def handle(self, *args, **options):
