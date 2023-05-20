@@ -1,7 +1,7 @@
 import re
 
 from rest_framework import serializers
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import AccessToken
 from users.models import User
 
 
@@ -81,7 +81,7 @@ class AuthGetTokenSerializer(SignUpSerializer):
     token = serializers.SerializerMethodField()
 
     def get_token(self, obj):
-        return str(RefreshToken.for_user(obj).access_token)
+        return str(AccessToken.for_user(obj).token)
 
     def validate_confirmation_code(self, value):
         if self.check_object() and value != self.instance.confirmation_code:
