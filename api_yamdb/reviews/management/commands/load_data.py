@@ -16,32 +16,9 @@ COMMENTS = 'comments.csv'
 MESSAGE = 'был успешно загружен в базу данных.'
 UTF = 'UTF-8'
 
-TABLES = {
-    User: USERS,
-    Category: CATEGORY,
-    Genre: GENRE,
-}
-
 
 class Command(BaseCommand):
     help = 'Загружает данные из csv файлов в базу данных'
-
-    # def load_genre_category_users(self):
-    #     for model, csv_f in TABLES.items():
-    #         with open(
-    #             f'{PATH}{csv_f}',
-    #             'r',
-    #             encoding=UTF
-    #         ) as csv_file:
-    #             reader = DictReader(csv_file)
-    #             model.objects.bulk_create(
-    #                 model(**data) for data in reader
-    #             )
-    #     self.stdout.write(self.style.SUCCESS(
-    #         f'{GENRE} {MESSAGE}'
-    #         f'{CATEGORY} {MESSAGE}'
-    #         f'{USERS} {MESSAGE}')
-    #     )
 
     def load_genre(self):
         for row in DictReader(
@@ -116,7 +93,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         try:
-            # self.load_genre_category_users()
             self.load_category()
             self.load_genre()
             self.load_title()
