@@ -1,5 +1,4 @@
-import logging
-import sys
+import csv
 from csv import DictReader
 
 from django.core.management import BaseCommand
@@ -18,21 +17,11 @@ COMMENTS = 'comments.csv'
 MESSAGE = 'был успешно загружен в базу данных.'
 UTF = 'UTF-8'
 
-FORMATTER = logging.Formatter(
-    "%(asctime)s — %(name)s — %(levelname)s — %(message)s"
-)
-
-
-# def get_logger(name):
-#     logger = logging.getLogger(name)
-#     logger.setLevel(logging.DEBUG)
-#     handler = logging.StreamHandler(sys.stdout)
-#     handler.setFormatter(FORMATTER)
-#     logger.addHandler(handler)
-#     return logger
-#
-#
-# logger = get_logger('load_data')
+TABLES = {
+    User: USERS,
+    Category: CATEGORY,
+    Genre: GENRE,
+}
 
 
 class Command(BaseCommand):
@@ -40,6 +29,24 @@ class Command(BaseCommand):
 
     def exist(self):
         pass
+
+    # def load_genre_category_users(self):
+    #     for model, csv_f in TABLES.items():
+    #         with open(
+    #             f'{PATH}{csv_f}',
+    #             'r',
+    #             encoding=UTF
+    #         ) as csv_file:
+    #             reader = csv.DictReader(csv_file)
+    #             model.objects.bulk_create(
+    #                 model(**data) for data in reader
+    #             )
+    #     self.stdout.write(self.style.SUCCESS(
+    #         f'{GENRE} {MESSAGE}'
+    #         f'{CATEGORY} {MESSAGE}'
+    #         f'{USERS} {MESSAGE}')
+    #     )
+
 
     def load_genre(self):
         for row in DictReader(
@@ -53,7 +60,6 @@ class Command(BaseCommand):
             f'{GENRE} {MESSAGE}')
         )
 
-        # logger.info(f'{GENRE} {MESSAGE}')
 
     def load_category(self):
         for row in DictReader(
@@ -67,7 +73,6 @@ class Command(BaseCommand):
             f'{CATEGORY} {MESSAGE}')
         )
 
-        #logger.info(f'{CATEGORY} {MESSAGE}')
 
     def load_title(self):
         for row in DictReader(
@@ -82,8 +87,6 @@ class Command(BaseCommand):
             f'{TITLE} {MESSAGE}')
         )
 
-        #logger.info(f'{TITLE} {MESSAGE}')
-
     def load_genre_title(self):
         for row in DictReader(
                 open(f'{PATH}{GENRE_TITLE}')):
@@ -93,7 +96,6 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(
             f'{GENRE_TITLE} {MESSAGE}')
         )
-        #logger.info(f'{GENRE_TITLE} {MESSAGE}')
 
     def load_users(self):
         for row in DictReader(
@@ -110,7 +112,6 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(
             f'{USERS} {MESSAGE}')
         )
-        #logger.info(f'{USERS} {MESSAGE}')
 
     def load_review(self):
         for row in DictReader(
@@ -126,7 +127,6 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(
             f'{REVIEW} {MESSAGE}')
         )
-        #logger.info(f'{REVIEW} {MESSAGE}')
 
     def load_comments(self):
         for row in DictReader(
@@ -141,20 +141,21 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(
             f'{REVIEW} {MESSAGE}')
         )
-        #logger.info(f'{COMMENTS} {MESSAGE}')
 
     def handle(self, *args, **options):
         try:
+            #self.load_genre_category_users()
             self.load_category()
             self.load_genre()
             self.load_title()
             self.load_genre_title()
             self.load_users()
-            self.load_review()
-            self.load_comments()
+            # self.load_review()
+            # self.load_comments()
 
         except IntegrityError as err:
             self.stdout.write(self.style.ERROR(
                 f'ERROR - {err}')
             )
             exit()
+
