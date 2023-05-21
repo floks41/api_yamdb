@@ -115,15 +115,19 @@ class AuthViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['POST'], name='Get token')
     def token(self, request):
         serializer = AuthGetTokenSerializer(data=request.data)
-        if serializer.is_valid():
-            return Response(data=serializer.validated_data,
-                            status=status.HTTP_200_OK)
+        
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.data)
+        
+        # if serializer.is_valid():
+        #     return Response(data=serializer.validated_data,
+        #                     status=status.HTTP_200_OK)
 
-        status_code = status.HTTP_400_BAD_REQUEST
+        # status_code = status.HTTP_400_BAD_REQUEST
         # if request.data.get('username') and 'username' in serializer.errors:
         #     status_code = status.HTTP_404_NOT_FOUND
-        return Response(serializer.errors,
-                        status=status_code)
+        # return Response(serializer.errors,
+                        # status=status_code)
 
     @action(detail=False, methods=['POST'], name='SignUp', url_path='signup')
     def sign_up(self, request):
