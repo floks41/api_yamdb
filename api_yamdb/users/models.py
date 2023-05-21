@@ -43,6 +43,14 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
+    @property
+    def is_admin(self):
+        return self.is_superuser or self.role == ADMIN_ROLE
+
+    @property
+    def is_project_staff(self):
+        return self.is_superuser or self.role in STAFF_USER_ROLES
+
     class Meta:
         constraints = [
             CheckConstraint(

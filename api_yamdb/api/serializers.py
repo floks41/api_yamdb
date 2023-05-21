@@ -2,12 +2,10 @@ import re
 
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
-from rest_framework.fields import empty
+from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework_simplejwt.tokens import AccessToken
-from django.http import Http404
-from rest_framework.exceptions import NotFound
 from reviews.models import Category, Comments, Genre, Review, Title
+
 from users.models import User
 
 USERNAME_PATTERN = r'^[\w.@+-]+\Z'
@@ -143,7 +141,7 @@ class SignUpSerializer(UserUsernameValidationSerializer):
 
     def __init__(self, data, instance=None, **kwargs):
         """Дополнительно подбирает объект из модели, если такой есть.
-        Сохраняет в self.instance. При отсутствии объекта 
+        Сохраняет в self.instance. При отсутствии объекта
         исключений не выдает.
         """
         super().__init__(instance, data, **kwargs)
@@ -152,7 +150,6 @@ class SignUpSerializer(UserUsernameValidationSerializer):
         if (username and self.Meta.model.objects.filter(
                 username=username).exists()):
             self.instance = self.Meta.model.objects.get(username=username)
-
 
     def validate_email(self, value):
         if self.instance:

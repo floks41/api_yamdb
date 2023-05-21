@@ -1,4 +1,5 @@
-from rest_framework import mixins, viewsets
+from rest_framework import mixins, status, viewsets
+from rest_framework.response import Response
 
 
 class CreateDestroyListViewSet(
@@ -10,10 +11,10 @@ class CreateDestroyListViewSet(
     pass
 
 
-class NotPutViewSet(viewsets.GenericViewSet):
+class NotPutModelViewSet(viewsets.ModelViewSet):
 
-def update(self, request, *args, **kwargs):
-    """PUT-method is prohibited."""
-    if request.method == 'PUT':
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-    return super().update(request, *args, **kwargs)
+    def update(self, request, *args, **kwargs):
+        """PUT-method is prohibited."""
+        if request.method == 'PUT':
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        return super().update(request, *args, **kwargs)
