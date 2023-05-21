@@ -139,10 +139,9 @@ class UsersViewSet(viewsets.ModelViewSet):
             serializer = UserSerializer(user)
             return Response(serializer.data)
 
-        if request.method == 'PATCH':
-            serializer = UserMePatchSerializer(user, data=request.data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            return Response(serializer.data)
+        serializer = UserMePatchSerializer(user, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
                     
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        
