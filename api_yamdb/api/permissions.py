@@ -3,7 +3,7 @@ from users.models import ADMIN_ROLE, STAFF_USER_ROLES
 
 
 class IsAuthorOrReadOnly(BasePermission):
-    """Небезопасные методы HTTP разрешены только автору.
+    """Небезопасные методы HTTP разрешены только автору суперпользователю.
     В остальные случаях разрешены безопасные методы HTTP: GET, HEAD, OPTIONS.
     """
     def has_object_permission(self, request, view, obj):

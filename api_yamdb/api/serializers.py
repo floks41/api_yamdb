@@ -4,6 +4,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.tokens import AccessToken
+from django.http import Http404
+from rest_framework.exceptions import NotFound
 from reviews.models import Category, Comments, Genre, Review, Title
 from users.models import User
 
@@ -187,7 +189,8 @@ class AuthGetTokenSerializer(SignUpSerializer):
 
     def validate_username(self, value):
         if not self.check_object():
-            raise serializers.ValidationError('Неверное имя пользователя.')
+            raise NotFound('Неверное имя пользователя.')
+        # ValidationError('Неверное имя пользователя.')
         return super().validate_username(value)
 
     class Meta(SignUpSerializer.Meta):

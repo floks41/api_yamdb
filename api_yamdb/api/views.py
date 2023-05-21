@@ -9,6 +9,7 @@ from rest_framework.pagination import (LimitOffsetPagination,
 from rest_framework.permissions import (AllowAny, IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
+from rest_framework.views import exception_handler
 from reviews.models import Category, Genre, Review, Title
 from users.models import User
 
@@ -95,9 +96,20 @@ class CommentViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user, review=review)
 
 
+# def validation_exception_handler(exc, context):
+#     response = exception_handler(exc, context)
+    
+#     if response is not None:
+#         response.data['status_code'] = response.status_code
+
+#     return response
+
+
 class AuthViewSet(viewsets.GenericViewSet):
     """Вьюсет для регистрации пользователей и получения токена."""
-    from ._confirmation_code_utils import (set_and_send_confirmation_code)
+
+    # exception_handler = validation_exception_handler
+    from ._confirmation_code_utils import (set_and_send_user_confirmation_code)
     permission_classes = (AllowAny,)
 
     @action(detail=False, methods=['POST'], name='Get token')
@@ -108,17 +120,17 @@ class AuthViewSet(viewsets.GenericViewSet):
                             status=status.HTTP_200_OK)
 
         status_code = status.HTTP_400_BAD_REQUEST
-        if request.data.get('username') and 'username' in serializer.errors:
-            status_code = status.HTTP_404_NOT_FOUND
+        # if request.data.get('username') and 'username' in serializer.errors:
+        #     status_code = status.HTTP_404_NOT_FOUND
         return Response(serializer.errors,
                         status=status_code)
 
-    @action(detail=False, methods=['POST'], name='SignUp')
-    def signup(self, request):
+    @action(detail=False, methods=['POST'], name='SignUp', url_path='signup')
+    def sign_up(self, request):
         serializer = SignUpSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            self.set_and_send_confirmation_code(user)
+            self.set_and_send_user_confirmation_code(user)
             # user.confirmation_code = self.generate_confirmation_code(user)
             # self.send_user_confirmation_code(user)
             return Response(data=serializer.validated_data,

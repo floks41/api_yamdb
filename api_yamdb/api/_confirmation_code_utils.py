@@ -1,7 +1,7 @@
+from django.contrib.auth.tokens import \
+    default_token_generator as token_generator
 from django.core.mail import send_mail
-# from django.utils.crypto import get_random_string
 from users.models import User
-from django.contrib.auth.tokens import default_token_generator as token_generator
 
 from api_yamdb.settings import ADMIN_EMAIL
 
@@ -28,7 +28,7 @@ def generate_confirmation_code(self, user: User) -> str:
     #                          CONFIRMATION_CODE_ALLOWED_CHARS)
 
 
-def set_and_send_confirmation_code(self, user: User) -> None:
+def set_and_send_user_confirmation_code(self, user: User) -> None:
     """Генерирует и сохраняет и отправляет по электронной почте 
     код подтверждения.
     """
