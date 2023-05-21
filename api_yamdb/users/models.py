@@ -1,7 +1,7 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.utils.translation import gettext_lazy as _
+from django.db import models
 from django.db.models import CheckConstraint, Q, UniqueConstraint
+from django.utils.translation import gettext_lazy as _
 
 USER_ROLE = 'user'
 MODERATOR_ROLE = 'moderator'

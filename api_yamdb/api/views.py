@@ -97,8 +97,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 class AuthViewSet(viewsets.GenericViewSet):
     """Вьюсет для регистрации пользователей и получения токена."""
-    from ._confirmation_code_utils import (generate_confirmation_code,
-                                           send_user_confirmation_code)
+    from ._confirmation_code_utils import (set_and_send_confirmation_code)
     permission_classes = (AllowAny,)
 
     @action(detail=False, methods=['POST'], name='Get token')
@@ -118,9 +117,10 @@ class AuthViewSet(viewsets.GenericViewSet):
     def signup(self, request):
         serializer = SignUpSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.save(
-                confirmation_code=self.generate_confirmation_code())
-            self.send_user_confirmation_code(user)
+            user = serializer.save()
+            self.set_and_send_confirmation_code(user)
+            # user.confirmation_code = self.generate_confirmation_code(user)
+            # self.send_user_confirmation_code(user)
             return Response(data=serializer.validated_data,
                             status=status.HTTP_200_OK)
         return Response(serializer.errors,
@@ -153,3 +153,5 @@ class UsersViewSet(viewsets.ModelViewSet):
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
