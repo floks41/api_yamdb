@@ -132,15 +132,21 @@ class AuthViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['POST'], name='SignUp', url_path='signup')
     def sign_up(self, request):
         serializer = SignUpSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            self.set_and_send_user_confirmation_code(user)
-            # user.confirmation_code = self.generate_confirmation_code(user)
-            # self.send_user_confirmation_code(user)
-            return Response(data=serializer.validated_data,
-                            status=status.HTTP_200_OK)
-        return Response(serializer.errors,
-                        status=status.HTTP_400_BAD_REQUEST)
+        
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        self.set_and_send_user_confirmation_code(user)
+        return Response(serializer.data)
+        
+        # if serializer.is_valid():
+        #     user = serializer.save()
+        #     self.set_and_send_user_confirmation_code(user)
+        #     # user.confirmation_code = self.generate_confirmation_code(user)
+        #     # self.send_user_confirmation_code(user)
+        #     return Response(data=serializer.validated_data,
+        #                     status=status.HTTP_200_OK)
+        # return Response(serializer.errors,
+        #                 status=status.HTTP_400_BAD_REQUEST)
 
 
 class UsersViewSet(viewsets.ModelViewSet):
