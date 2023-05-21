@@ -96,19 +96,9 @@ class CommentViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user, review=review)
 
 
-# def validation_exception_handler(exc, context):
-#     response = exception_handler(exc, context)
-    
-#     if response is not None:
-#         response.data['status_code'] = response.status_code
-
-#     return response
-
-
 class AuthViewSet(viewsets.GenericViewSet):
     """Вьюсет для регистрации пользователей и получения токена."""
 
-    # exception_handler = validation_exception_handler
     from ._confirmation_code_utils import (set_and_send_user_confirmation_code)
     permission_classes = (AllowAny,)
 
@@ -119,15 +109,6 @@ class AuthViewSet(viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
         return Response(serializer.data)
         
-        # if serializer.is_valid():
-        #     return Response(data=serializer.validated_data,
-        #                     status=status.HTTP_200_OK)
-
-        # status_code = status.HTTP_400_BAD_REQUEST
-        # if request.data.get('username') and 'username' in serializer.errors:
-        #     status_code = status.HTTP_404_NOT_FOUND
-        # return Response(serializer.errors,
-                        # status=status_code)
 
     @action(detail=False, methods=['POST'], name='SignUp', url_path='signup')
     def sign_up(self, request):
@@ -138,16 +119,6 @@ class AuthViewSet(viewsets.GenericViewSet):
         self.set_and_send_user_confirmation_code(user)
         return Response(serializer.data)
         
-        # if serializer.is_valid():
-        #     user = serializer.save()
-        #     self.set_and_send_user_confirmation_code(user)
-        #     # user.confirmation_code = self.generate_confirmation_code(user)
-        #     # self.send_user_confirmation_code(user)
-        #     return Response(data=serializer.validated_data,
-        #                     status=status.HTTP_200_OK)
-        # return Response(serializer.errors,
-        #                 status=status.HTTP_400_BAD_REQUEST)
-
 
 class UsersViewSet(viewsets.ModelViewSet):
     """Вьюсет для работы с пользователями и профилем пользователя."""
@@ -169,11 +140,15 @@ class UsersViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
 
         if request.method == 'PATCH':
+            # serializer = UserMePatchSerializer(user, data=request.data)
+            # if serializer.is_valid():
+            #     serializer.save()
+            #     return Response(serializer.data, status=status.HTTP_200_OK)
+            # return Response(serializer.errors,
+            #                 status=status.HTTP_400_BAD_REQUEST)
             serializer = UserMePatchSerializer(user, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
-        
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)
+                    
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
