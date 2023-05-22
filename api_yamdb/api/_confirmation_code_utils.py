@@ -1,26 +1,20 @@
-from api_yamdb.settings import ADMIN_EMAIL
+from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
-from django.utils.crypto import get_random_string
 
+from api_yamdb.settings import ADMIN_EMAIL
 from users.models import User
 
 EMAIL_SUBJECT_FOR_USER_CONFIRMATION_CODE = " Your confirmation code"
-CONFIRMATION_CODE_LENGTH = 10
-CONFIRMATION_CODE_ALLOWED_CHARS = ('abcdefghjkmnpqrstuvwxyz'
-                                   'ABCDEFGHJKLMNPQRSTUVWXYZ'
-                                   '23456789')
 
 
-def send_user_confirmation_code(self, user: User) -> None:
-    """Отправляет код подтверждения на адрес электронной почты пользователя."""
-
+def set_and_send_user_confirmation_code(self, user: User) -> None:
+    """Код подтверждения. Генерирует и отправляет по электронной почте.
+    Генерирует, сохраняет в объекте пользователя и отправляет
+    по электронной почте код подтверждения.
+    """
+    user.confirmation_code = default_token_generator.make_token(user)
+    user.save()
     send_mail(subject=EMAIL_SUBJECT_FOR_USER_CONFIRMATION_CODE,
               message=user.confirmation_code,
               from_email=ADMIN_EMAIL,
               recipient_list=[user.email, ])
-
-
-def generate_confirmation_code(self) -> str:
-    """Генерирует и возвращает код подтверждения."""
-    return get_random_string(CONFIRMATION_CODE_LENGTH,
-                             CONFIRMATION_CODE_ALLOWED_CHARS)

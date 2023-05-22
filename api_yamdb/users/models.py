@@ -1,7 +1,7 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.utils.translation import gettext_lazy as _
+from django.db import models
 from django.db.models import CheckConstraint, Q, UniqueConstraint
+from django.utils.translation import gettext_lazy as _
 
 USER_ROLE = 'user'
 MODERATOR_ROLE = 'moderator'
@@ -42,6 +42,14 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+    @property
+    def is_admin(self):
+        return self.is_superuser or self.role == ADMIN_ROLE
+
+    @property
+    def is_project_staff(self):
+        return self.is_superuser or self.role in STAFF_USER_ROLES
 
     class Meta:
         constraints = [

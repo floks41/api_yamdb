@@ -1,8 +1,10 @@
-from rest_framework import mixins, viewsets
+from rest_framework import mixins, status, viewsets
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
 
 from permissions import IsAdminOrReadOnly
+
 
 
 class CreateDestroyListViewSet(
@@ -15,3 +17,12 @@ class CreateDestroyListViewSet(
     filter_backends = (SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
+
+
+class NotPutModelViewSet(viewsets.ModelViewSet):
+    """Вьюсет для моделей с запретом PUT-запросов."""
+    def update(self, request, *args, **kwargs):
+        """PUT-запросы запрещены."""
+        if request.method == 'PUT':
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        return super().update(request, *args, **kwargs)
