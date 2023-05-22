@@ -29,8 +29,8 @@ class CategoryViewSet(CreateDestroyListViewSet):
     serializer_class = CategorySerializer
     permission_classes = (IsAuthenticatedOrReadOnly, IsAdminOrReadOnly,)
     filter_backends = (SearchFilter,)
-    search_fields = ("name",)
-    lookup_field = "slug"
+    search_fields = ('name',)
+    lookup_field = 'slug'
 
 
 class GenreViewSet(CreateDestroyListViewSet):
@@ -39,8 +39,8 @@ class GenreViewSet(CreateDestroyListViewSet):
     serializer_class = GenreSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, IsAdminOrReadOnly,)
     filter_backends = (SearchFilter,)
-    search_fields = ("name",)
-    lookup_field = "slug"
+    search_fields = ('name',)
+    lookup_field = 'slug'
 
 
 class TitleViewSet(viewsets.ModelViewSet):
