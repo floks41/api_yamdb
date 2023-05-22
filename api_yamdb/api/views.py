@@ -27,20 +27,12 @@ class CategoryViewSet(CreateDestroyListViewSet):
     """Вьюсет для моделей Category."""
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = (IsAuthenticatedOrReadOnly, IsAdminOrReadOnly,)
-    filter_backends = (SearchFilter,)
-    search_fields = ('name',)
-    lookup_field = 'slug'
 
 
 class GenreViewSet(CreateDestroyListViewSet):
     """Вьюсет для моделей Genre."""
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly, IsAdminOrReadOnly,)
-    filter_backends = (SearchFilter,)
-    search_fields = ('name',)
-    lookup_field = 'slug'
 
 
 class TitleViewSet(viewsets.ModelViewSet):
