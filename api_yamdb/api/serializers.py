@@ -2,8 +2,9 @@ import re
 
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework_simplejwt.tokens import AccessToken
+
 from reviews.models import Category, Comments, Genre, Review, Title
 from users.models import User
 
@@ -54,17 +55,17 @@ class TitleWriteSerializer(serializers.ModelSerializer):
      информации о произведении."""
     category = serializers.SlugRelatedField(
         queryset=Category.objects.all(),
-        slug_field="slug",
+        slug_field='slug',
     )
     genre = serializers.SlugRelatedField(
         queryset=Genre.objects.all(),
-        slug_field="slug",
+        slug_field='slug',
         many=True,
     )
 
     class Meta:
         model = Title
-        fields = "__all__"
+        fields = '__all__'
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -112,7 +113,7 @@ class UserUsernameValidationSerializer(UserSerializer):
     def validate_username(self, value):
         if value.lower() == 'me':
             raise serializers.ValidationError(
-                'Пользователь не может иметь username \'me\'.')
+                'Пользователь не может иметь username me.')
 
         if not re.compile(USERNAME_PATTERN).match(value):
             raise serializers.ValidationError(
@@ -137,30 +138,21 @@ class SignUpSerializer(UserUsernameValidationSerializer):
     """
     username = serializers.CharField(required=True, max_length=150)
     email = serializers.EmailField(required=True, max_length=254)
-    is_object_existance_checked = False
-    is_object_exists = False
 
-    def check_object(self):
-        """Подбирает объект из модели, если такой есть.
-        Сохраняет в self.instance. Запоминает факт проверки и результат
-        в self.is_object_existance_checked и self.is_object_exists.
-        При отсутствии объекта исключений не выдает.
+    def __init__(self, data, instance=None, **kwargs):
+        """Дополнительно подбирает объект из модели, если такой есть.
+        Сохраняет в self.instance. При отсутствии объекта
+        исключений не выдает.
         """
-        if self.is_object_existance_checked:
-            return self.is_object_exists
+        super().__init__(instance, data, **kwargs)
 
         username = self.initial_data.get('username')
-
         if (username and self.Meta.model.objects.filter(
                 username=username).exists()):
             self.instance = self.Meta.model.objects.get(username=username)
-            self.is_object_exists = True
-            self.is_object_existance_checked = True
-
-        return self.is_object_exists
 
     def validate_email(self, value):
-        if self.check_object():
+        if self.instance:
             if value != self.instance.email:
                 raise serializers.ValidationError('Неверный email.')
         else:
@@ -181,13 +173,13 @@ class AuthGetTokenSerializer(SignUpSerializer):
         return str(AccessToken.for_user(obj).token)
 
     def validate_confirmation_code(self, value):
-        if self.check_object() and value != self.instance.confirmation_code:
+        if self.instance and value != self.instance.confirmation_code:
             raise serializers.ValidationError('Неверный код подтверждения.')
         return value
 
     def validate_username(self, value):
-        if not self.check_object():
-            raise serializers.ValidationError('Неверное имя пользователя.')
+        if not self.instance:
+            raise NotFound('Неверное имя пользователя.')
         return super().validate_username(value)
 
     class Meta(SignUpSerializer.Meta):

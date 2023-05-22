@@ -56,12 +56,6 @@ pip install -r requirements.txt
 cd api_yamdb
 ```
 ```
-python3 manage.py makemigrate user
-```
-```
-python3 manage.py makemigrate reviews
-```
-```
 python3 manage.py migrate
 ```
 ### Запустить проект:
