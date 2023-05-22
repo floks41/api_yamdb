@@ -1,6 +1,7 @@
 from datetime import datetime
 
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator, \
+    RegexValidator
 from django.db import models
 from users.models import User
 
@@ -8,7 +9,16 @@ from users.models import User
 class Category(models.Model):
     """Модель категорий произведений."""
     name = models.CharField(max_length=255, verbose_name='Название категории')
-    slug = models.SlugField(unique=True, db_index=True, verbose_name='Слаг')
+    slug = models.SlugField(max_length=50,
+                            unique=True,
+                            db_index=True,
+                            validators=[
+                                RegexValidator(
+                                    regex=r'^[-a-zA-Z0-9_]+$',
+                                    message='Некорректный слаг'
+                                ),
+                            ],
+                            verbose_name='Слаг')
 
     def __str__(self):
         return self.name
@@ -22,7 +32,16 @@ class Category(models.Model):
 class Genre(models.Model):
     """Модель жанров произведений."""
     name = models.CharField(max_length=255, verbose_name='Название жанра')
-    slug = models.SlugField(unique=True, db_index=True, verbose_name='Слаг')
+    slug = models.SlugField(max_length=50,
+                            unique=True,
+                            db_index=True,
+                            validators=[
+                                RegexValidator(
+                                    regex=r'^[-a-zA-Z0-9_]+$',
+                                    message='Некорректный слаг'
+                                ),
+                            ],
+                            verbose_name='Слаг')
 
     def __str__(self):
         return self.name
