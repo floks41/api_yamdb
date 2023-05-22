@@ -8,8 +8,6 @@ from rest_framework.pagination import (LimitOffsetPagination,
 from rest_framework.permissions import (AllowAny, IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
-from reviews.models import Category, Genre, Review, Title
-from users.models import User
 
 from api.filters import TitleFilter
 from api.mixins import CreateDestroyListViewSet, NotPutModelViewSet
@@ -20,6 +18,8 @@ from api.serializers import (AuthGetTokenSerializer, CategorySerializer,
                              ReviewSerializer, SignUpSerializer,
                              TitleReadSerializer, TitleWriteSerializer,
                              UserMePatchSerializer, UserSerializer)
+from reviews.models import Category, Genre, Review, Title
+from users.models import User
 
 
 class CategoryViewSet(CreateDestroyListViewSet):

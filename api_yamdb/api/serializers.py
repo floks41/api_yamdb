@@ -6,7 +6,6 @@ from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework_simplejwt.tokens import AccessToken
 
 from reviews.models import Category, Comments, Genre, Review, Title
-
 from users.models import User
 
 USERNAME_PATTERN = r'^[\w.@+-]+\Z'
@@ -114,7 +113,7 @@ class UserUsernameValidationSerializer(UserSerializer):
     def validate_username(self, value):
         if value.lower() == 'me':
             raise serializers.ValidationError(
-                'Пользователь не может иметь username \'me\'.')
+                'Пользователь не может иметь username me.')
 
         if not re.compile(USERNAME_PATTERN).match(value):
             raise serializers.ValidationError(

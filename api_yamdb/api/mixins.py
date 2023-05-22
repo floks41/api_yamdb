@@ -10,7 +10,8 @@ class CreateDestroyListViewSet(
     mixins.ListModelMixin,
     mixins.CreateModelMixin,
     mixins.DestroyModelMixin,
-    viewsets.GenericViewSet):
+    viewsets.GenericViewSet
+):
     """Базовый вьюсет для моделей Genre и Category."""
     permission_classes = (IsAuthenticatedOrReadOnly, IsAdminOrReadOnly,)
     filter_backends = (SearchFilter,)
