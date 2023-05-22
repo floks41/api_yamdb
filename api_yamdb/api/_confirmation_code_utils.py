@@ -1,8 +1,8 @@
+from api_yamdb.settings import ADMIN_EMAIL
 from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
-from users.models import User
 
-from api_yamdb.settings import ADMIN_EMAIL
+from users.models import User
 
 EMAIL_SUBJECT_FOR_USER_CONFIRMATION_CODE = " Your confirmation code"
 CONFIRMATION_CODE_LENGTH = 10
