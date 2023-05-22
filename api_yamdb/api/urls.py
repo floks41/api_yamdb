@@ -5,13 +5,13 @@ from .views import (AuthViewSet, CategoryViewSet, CommentViewSet, GenreViewSet,
                     ReviewViewSet, TitleViewSet, UsersViewSet)
 
 
-class NoPutRouter(routers.DefaultRouter):
-    """Класс роутер, отключающий PUT запросы."""
-    def get_method_map(self, viewset, method_map):
-        bound_methods = super().get_method_map(viewset, method_map)
-        if 'put' in bound_methods.keys():
-            del bound_methods['put']
-        return bound_methods
+# class NoPutRouter(routers.DefaultRouter):
+#     """Класс роутер, отключающий PUT запросы."""
+#     def get_method_map(self, viewset, method_map):
+#         bound_methods = super().get_method_map(viewset, method_map)
+#         if 'put' in bound_methods.keys():
+#             del bound_methods['put']
+#         return bound_methods
 
 
 # router_v1 = NoPutRouter()

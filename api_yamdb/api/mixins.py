@@ -3,7 +3,7 @@ from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
-from permissions import IsAdminOrReadOnly
+from api.permissions import IsAdminOrReadOnly
 
 
 

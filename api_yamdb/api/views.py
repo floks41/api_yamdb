@@ -3,7 +3,6 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, viewsets
 from rest_framework.decorators import action
-from rest_framework.filters import SearchFilter
 from rest_framework.pagination import (LimitOffsetPagination,
                                        PageNumberPagination)
 from rest_framework.permissions import (AllowAny, IsAuthenticated,
@@ -35,7 +34,7 @@ class GenreViewSet(CreateDestroyListViewSet):
     serializer_class = GenreSerializer
 
 
-class TitleViewSet(viewsets.ModelViewSet):
+class TitleViewSet(NotPutModelViewSet):
     """Вьюсет для моделей Title."""
     queryset = Title.objects.annotate(rating=Avg('review__score'))
     permission_classes = (IsAuthenticatedOrReadOnly, IsAdminOrReadOnly,)
@@ -49,7 +48,7 @@ class TitleViewSet(viewsets.ModelViewSet):
         return TitleReadSerializer
 
 
-class ReviewViewSet(viewsets.ModelViewSet):
+class ReviewViewSet(NotPutModelViewSet):
     """Вьюсет для моделей Review."""
     serializer_class = ReviewSerializer
     permission_classes = (
@@ -67,7 +66,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
         return Review.objects.filter(title=self.get_title())
 
 
-class CommentViewSet(viewsets.ModelViewSet):
+class CommentViewSet(NotPutModelViewSet):
     """Вьюсет для моделей Comment."""
     serializer_class = CommentsSerializer
     permission_classes = (
@@ -127,7 +126,6 @@ class UsersViewSet(NotPutModelViewSet):
             serializer = UserSerializer(user)
             return Response(serializer.data)
 
-        # if request.method == 'PATCH'
         serializer = UserMePatchSerializer(user, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
