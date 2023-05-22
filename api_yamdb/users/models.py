@@ -21,7 +21,7 @@ class User(AbstractUser):
         unique=True,
         max_length=254,
         error_messages={
-            'unique': _("Пользователь с указанным email уже существует."),
+            'unique': _('Пользователь с указанным email уже существует.'),
         })
     role = models.CharField(
         max_length=255,

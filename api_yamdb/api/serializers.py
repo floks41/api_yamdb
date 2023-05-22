@@ -56,17 +56,17 @@ class TitleWriteSerializer(serializers.ModelSerializer):
      информации о произведении."""
     category = serializers.SlugRelatedField(
         queryset=Category.objects.all(),
-        slug_field="slug",
+        slug_field='slug',
     )
     genre = serializers.SlugRelatedField(
         queryset=Genre.objects.all(),
-        slug_field="slug",
+        slug_field='slug',
         many=True,
     )
 
     class Meta:
         model = Title
-        fields = "__all__"
+        fields = '__all__'
 
 
 class ReviewSerializer(serializers.ModelSerializer):

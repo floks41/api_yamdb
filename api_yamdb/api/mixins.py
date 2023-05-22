@@ -6,7 +6,6 @@ from rest_framework.response import Response
 from api.permissions import IsAdminOrReadOnly
 
 
-
 class CreateDestroyListViewSet(
     mixins.ListModelMixin,
     mixins.CreateModelMixin,

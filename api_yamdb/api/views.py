@@ -89,7 +89,7 @@ class CommentViewSet(NotPutModelViewSet):
 class AuthViewSet(viewsets.GenericViewSet):
     """Вьюсет для регистрации пользователей и получения токена."""
 
-    from ._confirmation_code_utils import set_and_send_user_confirmation_code
+    from ._confirmation_code_util import set_and_send_user_confirmation_code
     permission_classes = (AllowAny,)
 
     @action(detail=False, methods=['POST'], name='Get token')
