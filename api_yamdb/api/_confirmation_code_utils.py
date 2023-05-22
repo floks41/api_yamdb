@@ -1,8 +1,8 @@
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
-from users.models import User
 
 from api_yamdb.settings import ADMIN_EMAIL
+from users.models import User
 
 EMAIL_SUBJECT_FOR_USER_CONFIRMATION_CODE = " Your confirmation code"
 
