@@ -41,8 +41,8 @@ class CommentsSerializer(serializers.ModelSerializer):
 
 class TitleReadSerializer(serializers.ModelSerializer):
     """Сериализатор для SAFE_METHODS к произведениям."""
-    category = CategorySerializer(many=False, required=False)
-    genre = GenreSerializer(many=True, required=False)
+    category = CategorySerializer(read_only=True)
+    genre = GenreSerializer(many=True)
     rating = serializers.IntegerField(read_only=True)
 
     class Meta:
