@@ -45,11 +45,12 @@ class User(AbstractUser):
 
     @property
     def is_admin(self):
-        return self.is_superuser or self.role == ADMIN_ROLE
+        return self.is_superuser and self.is_staff or self.role == ADMIN_ROLE
 
     @property
     def is_project_staff(self):
-        return self.is_superuser or self.role in STAFF_USER_ROLES
+        return (self.is_superuser and self.is_staff
+                or self.role in STAFF_USER_ROLES)
 
     class Meta:
         constraints = [
