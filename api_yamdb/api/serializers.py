@@ -147,10 +147,10 @@ class SignUpSerializer(UserUsernameValidationSerializer):
         """
         super().__init__(instance, data, **kwargs)
 
-        username = self.initial_data.get('username')
-        if (username and self.Meta.model.objects.filter(
-                username=username).exists()):
-            self.instance = self.Meta.model.objects.get(username=username)
+        # username = self.initial_data.get('username')
+        # if (username and self.Meta.model.objects.filter(
+        #         username=username).exists()):
+        #     self.instance = self.Meta.model.objects.get(username=username)
 
     def validate_email(self, value):
         if self.instance:
