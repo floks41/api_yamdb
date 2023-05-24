@@ -154,7 +154,7 @@ class SignUpSerializer(UserUsernameValidationSerializer):
 
 
 class AuthGetTokenSerializer(SignUpSerializer):
-    """Сериализатор модели User для эндпоинта auth/token/. 
+    """Сериализатор модели User для эндпоинта auth/token/.
     Получение токена.
     """
     token = serializers.SerializerMethodField()
