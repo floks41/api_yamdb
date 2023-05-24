@@ -93,7 +93,6 @@ class AuthViewSet(viewsets.GenericViewSet):
     permission_classes = (AllowAny,)
     
     def get_serializer(self, serializer_class):
-        self.get_object
         username = self.request.data.get('username')
         if (username and User.objects.filter(username=username).exists()):
             instance = User.objects.get(username=username)
@@ -102,7 +101,7 @@ class AuthViewSet(viewsets.GenericViewSet):
 
     @action(detail=False, methods=['POST'], name='Get token')
     def token(self, request):
-        serializer = self.get_serializer(AuthGetTokenSerializer)
+        serializer = self.get_serializer(AuthGetTokenSerializer) # AuthGetTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         return Response(serializer.data)
 
