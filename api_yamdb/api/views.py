@@ -92,15 +92,22 @@ class AuthViewSet(viewsets.GenericViewSet):
     from ._confirmation_code_util import set_and_send_user_confirmation_code
     permission_classes = (AllowAny,)
 
+    def get_serializer(self, serializer_class):
+        username = self.request.data.get('username')
+        if (username and User.objects.filter(username=username).exists()):
+            instance = User.objects.get(username=username)
+            return serializer_class(instance=instance, data=self.request.data)
+        return serializer_class(data=self.request.data)
+
     @action(detail=False, methods=['POST'], name='Get token')
     def token(self, request):
-        serializer = AuthGetTokenSerializer(data=request.data)
+        serializer = self.get_serializer(AuthGetTokenSerializer)
         serializer.is_valid(raise_exception=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['POST'], name='SignUp', url_path='signup')
     def sign_up(self, request):
-        serializer = SignUpSerializer(data=request.data)
+        serializer = self.get_serializer(SignUpSerializer)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         self.set_and_send_user_confirmation_code(user)
