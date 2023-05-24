@@ -41,8 +41,8 @@ class CommentsSerializer(serializers.ModelSerializer):
 
 class TitleReadSerializer(serializers.ModelSerializer):
     """Сериализатор для SAFE_METHODS к произведениям."""
-    category = CategorySerializer(many=False, required=False)
-    genre = GenreSerializer(many=True, required=False)
+    category = CategorySerializer(read_only=True)
+    genre = GenreSerializer(many=True)
     rating = serializers.IntegerField(read_only=True)
 
     class Meta:
@@ -139,18 +139,6 @@ class SignUpSerializer(UserUsernameValidationSerializer):
     username = serializers.CharField(required=True, max_length=150)
     email = serializers.EmailField(required=True, max_length=254)
 
-    def __init__(self, data, instance=None, **kwargs):
-        """Дополнительно подбирает объект из модели, если такой есть.
-        Сохраняет в self.instance. При отсутствии объекта
-        исключений не выдает.
-        """
-        super().__init__(instance, data, **kwargs)
-
-        username = self.initial_data.get('username')
-        if (username and self.Meta.model.objects.filter(
-                username=username).exists()):
-            self.instance = self.Meta.model.objects.get(username=username)
-
     def validate_email(self, value):
         if self.instance:
             if value != self.instance.email:
@@ -166,7 +154,9 @@ class SignUpSerializer(UserUsernameValidationSerializer):
 
 
 class AuthGetTokenSerializer(SignUpSerializer):
-    """Сериализатор модели User для эндпоинта auth/token/. Получение токена."""
+    """Сериализатор модели User для эндпоинта auth/token/. 
+    Получение токена.
+    """
     token = serializers.SerializerMethodField()
 
     def get_token(self, obj):

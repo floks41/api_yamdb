@@ -31,5 +31,5 @@ router_v1.register(
 app_name = 'api'
 
 urlpatterns = [
-    path('', include(router_v1.urls)),
+    path('v1/', include(router_v1.urls)),
 ]
