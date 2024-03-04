@@ -6,7 +6,7 @@
 ### Разработчики:
 👨🏻‍💻Роман: https://github.com/tatarenkov-r-v
 
-👨🏼‍💻Олег: https://github.com/chuzhmarov
+👨🏼‍💻Олег: https://github.com/floks41
 
 👨🏽‍💻Эдмон: https://github.com/MrDeadmon
 
